@@ -1,5 +1,6 @@
 import { Button, Grid, Hidden, makeStyles, TextField } from '@material-ui/core';
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
+import { useHistory, withRouter } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
 	//TODO: tweak button drop shadow and position shifting on click
@@ -44,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const SignupInPage = () => {
+const SignupInPage = (props) => {
 	// Page text stores
 	const signupText = {
 		header: 'Create an account.',
@@ -66,18 +67,28 @@ const SignupInPage = () => {
 	const [{ header, headButton, headSpan, submitButton }, setTextState] = useState(signupText);
 
 	const classes = useStyles();
+	const history = useHistory();
 
 	// Handlers
 	const onToggleClick = () => {
-		//TODO: logic for switching submit button function
 		if (haveAccount) {
-			setHaveAccount(false)
-			setTextState(signupText);
+			history.push("/signup");
 		} else {
-			setHaveAccount(true)
-			setTextState(loginText);
+			history.push("/login");
 		}
 	}
+
+	// Set state based on url path
+	useLayoutEffect(() => {
+		//TODO: logic for switching submit button function
+		if (props.location.pathname === "/login") {
+			setHaveAccount(true);
+			setTextState(loginText);
+		} else {
+			setHaveAccount(false);
+			setTextState(signupText);
+		}
+	}, [props.location.pathname])
 
 	return (
 		<Grid
@@ -164,4 +175,4 @@ const SignupInPage = () => {
 	);
 }
 
-export default SignupInPage;
+export default withRouter(SignupInPage);
