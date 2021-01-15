@@ -2,6 +2,24 @@ import { Button, Grid, Hidden, makeStyles, TextField } from '@material-ui/core';
 import React, { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
+	//TODO: tweak button drop shadow and position shifting on click
+	headButton: {
+		color: theme.palette.primary.main,
+		backgroundColor: theme.palette.getContrastText(theme.palette.primary.main),
+		fontWeight: 700,
+		padding: theme.spacing(2),
+		paddingLeft: theme.spacing(4),
+		paddingRight: theme.spacing(4),
+		marginLeft: theme.spacing(4),
+		marginRight: theme.spacing(4),
+		[theme.breakpoints.down("sm")]: {
+			marginTop: theme.spacing(4)
+		}
+	},
+	headSpan: {
+		color: 'grey',
+		fontWeight: 600
+	},
 	header: {
 		paddingLeft: theme.spacing(2),
 		fontWeight: 'bold'
@@ -13,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 		width: '60%',
 	},
 	inputs: {
-		padding: theme.spacing(2),
+		padding: theme.spacing(3),
 		'& > div': {
 			width: '100%',
 		},
@@ -27,17 +45,45 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SignupInPage = () => {
+	// Page text stores
+	const signupText = {
+		header: 'Create an account.',
+		headButton: 'Login',
+		headSpan: 'Already have an account?',
+		submitButton: 'Create'
+	}
+	const loginText = {
+		header: 'Welcome back!',
+		headButton: 'Create Account',
+		headSpan: 'Don\'t have an account?',
+		submitButton: 'Login'
+	}
+	// State vars/hooks
 	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [haveAccount, setHaveAccount] = useState(false);
+	const [{ header, headButton, headSpan, submitButton }, setTextState] = useState(signupText);
 
 	const classes = useStyles();
+
+	// Handlers
+	const onToggleClick = () => {
+		//TODO: logic for switching submit button function
+		if (haveAccount) {
+			setHaveAccount(false)
+			setTextState(signupText);
+		} else {
+			setHaveAccount(true)
+			setTextState(loginText);
+		}
+	}
 
 	return (
 		<Grid
 			container
 		>
-			<Grid item md={4}>
+			<Grid item md={4} id="gradient-image">
 				<Hidden smDown>
 					<img
 						className={classes.image}
@@ -46,67 +92,73 @@ const SignupInPage = () => {
 					/>
 				</Hidden>
 			</Grid>
-			<Grid
-				item
-				md
-				container
-				direction="column"
-				justify="center"
-				alignItems="center"
-				alignContent="center"
-				wrap="nowrap">
-				<div className={classes.form}>
-					<h1 className={classes.header}>Create an account.</h1>
-					<form>
-						<Grid
-							item
-							xs={12}
-							className={classes.inputs}>
-							<TextField
-								id="username"
-								label="Username"
-								value={username}
-								onChange={e => setUsername(e.target.value)}
-							/>
-						</Grid>
-						<Grid
-							item
-							xs={12}
-							className={classes.inputs}>
-							<TextField
-								id="email"
-								type="email"
-								label="E-Mail address"
-								value={email}
-								onChange={e => setEmail(e.target.value)}
-							/>
-						</Grid>
-						<Grid
-							item
-							className={classes.inputs}
-							xs={12}>
-							<TextField
-								id="password"
-								type="password"
-								label="Password"
-								value={password}
-								onChange={e => setPassword(e.target.value)}
-							/>
-						</Grid>
-						<Grid
-							className={classes.inputs}
-							container
-							item
-							xs={12}
-							justify="center"
-							alignItems="center"
-							alignContent="center">
-							<Button size="large" variant="contained" color="primary">
-								Create
-							</Button>
-						</Grid>
-					</form>
-				</div>
+			<Grid item md container>
+				<Grid item xs={1} sm={4}></Grid>
+				<Grid item container xs sm justify="flex-end" alignItems="center">
+					<span className={classes.headSpan}>{headSpan}</span>
+					<Button onClick={onToggleClick} className={classes.headButton} variant="contained" size="large">
+						{headButton}
+					</Button>
+				</Grid>
+				<Grid
+					container
+					item
+					xs={12}
+					justify="center">
+					<div className={classes.form}>
+						<h1 className={classes.header}>{header}</h1>
+						<form>
+							<Grid
+								item
+								xs={12}
+								className={classes.inputs}>
+								<TextField
+									id="username"
+									label="Username"
+									value={username}
+									onChange={e => setUsername(e.target.value)}
+								/>
+							</Grid>
+							<Grid
+								hidden={haveAccount}
+								item
+								xs={12}
+								className={classes.inputs}>
+								<TextField
+									id="email"
+									type="email"
+									label="E-Mail address"
+									value={email}
+									onChange={e => setEmail(e.target.value)}
+								/>
+							</Grid>
+							<Grid
+								item
+								className={classes.inputs}
+								xs={12}>
+								<TextField
+									id="password"
+									type="password"
+									label="Password"
+									value={password}
+									onChange={e => setPassword(e.target.value)}
+								/>
+							</Grid>
+							<Grid
+								className={classes.inputs}
+								container
+								item
+								xs={12}
+								justify="center"
+								alignItems="center"
+								alignContent="center">
+								<Button size="large" variant="contained" color="primary">
+									{submitButton}
+								</Button>
+							</Grid>
+						</form>
+					</div>
+				</Grid>
 			</Grid>
 		</Grid >
 	);

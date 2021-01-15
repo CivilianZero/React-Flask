@@ -1,0 +1,3 @@
+#gradient-image:before {
+  background: linear-gradient(to bottom, #3a8dff, #86b9ff 85%);
+}
