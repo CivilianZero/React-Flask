@@ -2,15 +2,27 @@ import { Button, Grid, Hidden, makeStyles, TextField } from '@material-ui/core';
 import React, { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
+	header: {
+		paddingLeft: theme.spacing(2),
+		fontWeight: 'bold'
+	},
 	image: {
 		height: '100vh',
 	},
 	form: {
-		width: '100%',
+		width: '60%',
 	},
 	inputs: {
-		padding: 20,
-		width: '80%',
+		padding: theme.spacing(2),
+		'& > div': {
+			width: '100%',
+		},
+		'& > button': {
+			padding: theme.spacing(2),
+			width: '40%',
+			fontWeight: '600',
+			boxShadow: 'none'
+		}
 	}
 }));
 
@@ -24,12 +36,8 @@ const SignupInPage = () => {
 	return (
 		<Grid
 			container
-			justify="center"
-			alignItems="center"
-			alignContent="center"
-			wrap="nowrap"
 		>
-			<Grid item sm>
+			<Grid item md={4}>
 				<Hidden smDown>
 					<img
 						className={classes.image}
@@ -40,29 +48,32 @@ const SignupInPage = () => {
 			</Grid>
 			<Grid
 				item
-				xs={12}
-				sm={7}
+				md
 				container
-				spacing={10}
+				direction="column"
 				justify="center"
 				alignItems="center"
 				alignContent="center"
 				wrap="nowrap">
 				<div className={classes.form}>
-					<h1>Create an account.</h1>
+					<h1 className={classes.header}>Create an account.</h1>
 					<form>
-						<Grid item xs={12}>
+						<Grid
+							item
+							xs={12}
+							className={classes.inputs}>
 							<TextField
-								className={classes.inputs}
 								id="username"
 								label="Username"
 								value={username}
 								onChange={e => setUsername(e.target.value)}
 							/>
 						</Grid>
-						<Grid item xs={12}>
+						<Grid
+							item
+							xs={12}
+							className={classes.inputs}>
 							<TextField
-								className={classes.inputs}
 								id="email"
 								type="email"
 								label="E-Mail address"
@@ -70,9 +81,11 @@ const SignupInPage = () => {
 								onChange={e => setEmail(e.target.value)}
 							/>
 						</Grid>
-						<Grid item xs={12}>
+						<Grid
+							item
+							className={classes.inputs}
+							xs={12}>
 							<TextField
-								className={classes.inputs}
 								id="password"
 								type="password"
 								label="Password"
@@ -80,10 +93,17 @@ const SignupInPage = () => {
 								onChange={e => setPassword(e.target.value)}
 							/>
 						</Grid>
-						<Grid item xs={12}>
-							<Button variant="contained" color="primary">
+						<Grid
+							className={classes.inputs}
+							container
+							item
+							xs={12}
+							justify="center"
+							alignItems="center"
+							alignContent="center">
+							<Button size="large" variant="contained" color="primary">
 								Create
-								</Button>
+							</Button>
 						</Grid>
 					</form>
 				</div>

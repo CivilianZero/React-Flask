@@ -5,8 +5,6 @@ import "./App.css";
 import SignupInPage from './pages/SignupIn';
 import { theme } from "./themes/theme";
 
-
-
 function App() {
 	return (
 		<MuiThemeProvider theme={theme}>
