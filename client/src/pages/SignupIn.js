@@ -1,6 +1,9 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Grid, Hidden, makeStyles, TextField } from '@material-ui/core';
 import React, { useLayoutEffect, useState } from "react";
+import { useForm } from 'react-hook-form';
 import { useHistory, withRouter } from 'react-router-dom';
+import * as yup from 'yup';
 
 const useStyles = makeStyles((theme) => ({
 	//TODO: tweak button drop shadow and position shifting on click
@@ -34,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 	inputs: {
 		padding: theme.spacing(3),
 		'& > div': {
-			width: '100%',
+			// width: '100%',
 		},
 		'& > button': {
 			padding: theme.spacing(2),
@@ -44,6 +47,17 @@ const useStyles = makeStyles((theme) => ({
 		}
 	}
 }));
+
+// Yup schema
+const loginSchema = yup.object().shape({
+	username: yup.string().required(),
+	email: yup.string().email().required(),
+	password: yup.string().min(6).required()
+});
+const signupSchema = yup.object().shape({
+	...loginSchema,
+	email: yup.string().email().required()
+});
 
 const SignupInPage = (props) => {
 	// Page text stores
@@ -60,14 +74,16 @@ const SignupInPage = (props) => {
 		submitButton: 'Login'
 	}
 	// State vars/hooks
-	const [username, setUsername] = useState('');
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
 	const [haveAccount, setHaveAccount] = useState(false);
 	const [{ header, headButton, headSpan, submitButton }, setTextState] = useState(signupText);
 
 	const classes = useStyles();
 	const history = useHistory();
+
+	// Form setup
+	const { register, handleSubmit, errors } = useForm({
+		resolver: yupResolver(loginSchema)
+	});
 
 	// Handlers
 	const onToggleClick = () => {
@@ -77,6 +93,13 @@ const SignupInPage = (props) => {
 			history.push("/login");
 		}
 	}
+
+	const onFormSubmit = (value) => {
+		console.log(register);
+		console.log(loginSchema);
+		console.log(errors);
+	}
+
 
 	// Set state based on url path
 	useLayoutEffect(() => {
@@ -89,6 +112,7 @@ const SignupInPage = (props) => {
 			setTextState(signupText);
 		}
 	}, [props.location.pathname])
+
 
 	return (
 		<Grid
@@ -118,16 +142,20 @@ const SignupInPage = (props) => {
 					justify="center">
 					<div className={classes.form}>
 						<h1 className={classes.header}>{header}</h1>
-						<form>
+						<form onSubmit={handleSubmit(onFormSubmit)} noValidate>
 							<Grid
 								item
 								xs={12}
 								className={classes.inputs}>
 								<TextField
+									name="username"
+									inputRef={register}
+									fullWidth
+									helperText={errors.username ? "Required" : null}
+									error={errors.username ? true : false}
+									required
 									id="username"
 									label="Username"
-									value={username}
-									onChange={e => setUsername(e.target.value)}
 								/>
 							</Grid>
 							<Grid
@@ -136,11 +164,15 @@ const SignupInPage = (props) => {
 								xs={12}
 								className={classes.inputs}>
 								<TextField
+									name="email"
+									inputRef={register}
+									fullWidth
+									helperText={errors.email ? "Required" : null}
+									required={!haveAccount}
+									error={errors.email ? true : false}
 									id="email"
 									type="email"
 									label="E-Mail address"
-									value={email}
-									onChange={e => setEmail(e.target.value)}
 								/>
 							</Grid>
 							<Grid
@@ -148,11 +180,15 @@ const SignupInPage = (props) => {
 								className={classes.inputs}
 								xs={12}>
 								<TextField
+									name="password"
+									inputRef={register}
+									fullWidth
+									helperText="Must be 6+ characters"
+									error={errors.password ? true : false}
+									required
 									id="password"
 									type="password"
 									label="Password"
-									value={password}
-									onChange={e => setPassword(e.target.value)}
 								/>
 							</Grid>
 							<Grid
@@ -163,7 +199,7 @@ const SignupInPage = (props) => {
 								justify="center"
 								alignItems="center"
 								alignContent="center">
-								<Button size="large" variant="contained" color="primary">
+								<Button type="submit" size="large" variant="contained" color="primary">
 									{submitButton}
 								</Button>
 							</Grid>
