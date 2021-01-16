@@ -135,7 +135,7 @@ const SignupInPage = (props) => {
 			<Hidden smDown>
 				<Grid className={classes.bgImg} item container md={4} justify="center" alignItems="center" alignContent="flex-start">
 					<Grid item xs={8} className={classes.imageText}>
-						<object data="/assets/images/bubble.svg" type="image/svg+xml">message bubble</object>
+						<object data="/assets/images/bubble.svg" type="image/svg+xml" alt="message bubble"></object>
 						<p>Converse with anyone with any language</p>
 					</Grid>
 				</Grid>
