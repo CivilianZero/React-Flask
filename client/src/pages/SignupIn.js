@@ -65,6 +65,7 @@ const SignupInPage = (props) => {
 	}
 	// State vars/hooks
 	const [haveAccount, setHaveAccount] = useState(false);
+	const [openSnackbar, setOpenSnackbar] = useState(false);
 	const [{ header, headButton, headSpan, submitButton }, setTextState] = useState(signupText);
 
 	const classes = useStyles();
@@ -100,6 +101,9 @@ const SignupInPage = (props) => {
 	const onFormSubmit = (value) => {
 		console.log(value);
 	}
+
+	const handleSnackbar = () => setOpenSnackbar(true);
+	const closeSnackbar = () => setOpenSnackbar(false);
 
 	// Set state based on url path
 	useLayoutEffect(() => {
@@ -196,10 +200,10 @@ const SignupInPage = (props) => {
 								justify="center"
 								alignItems="center"
 								alignContent="center">
-								<Button type="submit" size="large" variant="contained" color="primary">
+								<Button onClick={handleSnackbar} type="submit" size="large" variant="contained" color="primary">
 									{submitButton}
 								</Button>
-								<Snackbar open={errors} autoHideDuration={6000}>
+								<Snackbar open={openSnackbar && (errors.username || errors.email || errors.password)} autoHideDuration={6000} onClose={closeSnackbar}>
 									<MuiAlert elevation={6} variant="filled" severity="error">
 										Form failed validation!
         					</MuiAlert>
