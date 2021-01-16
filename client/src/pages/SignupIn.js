@@ -29,9 +29,6 @@ const useStyles = makeStyles((theme) => ({
 		paddingLeft: theme.spacing(2),
 		fontWeight: 'bold'
 	},
-	image: {
-		height: '100vh',
-	},
 	form: {
 		width: '60%',
 	},
@@ -46,6 +43,18 @@ const useStyles = makeStyles((theme) => ({
 			fontWeight: '600',
 			boxShadow: 'none'
 		}
+	},
+	bgImg: {
+		backgroundImage: "linear-gradient(to bottom, rgba(58, 141, 255, 0.85), rgb(133, 184, 255, 0.85)), url('/assets/images/bg-img.png')",
+		height: "100vh",
+		backgroundSize: "cover",
+	},
+	imageText: {
+		marginTop: "40%",
+		color: "white",
+		fontWeight: "600",
+		fontSize: 24,
+		textAlign: "center",
 	}
 }));
 
@@ -123,18 +132,17 @@ const SignupInPage = (props) => {
 		<Grid
 			container
 		>
-			<Grid item md={4} id="gradient-image">
-				<Hidden smDown>
-					<img
-						className={classes.image}
-						alt="background"
-						src="/assets/images/bg-img.png"
-					/>
-				</Hidden>
-			</Grid>
+			<Hidden smDown>
+				<Grid className={classes.bgImg} item container md={4} justify="center" alignItems="center" alignContent="flex-start">
+					<Grid item xs={8} className={classes.imageText}>
+						<object data="/assets/images/bubble.svg" type="image/svg+xml">message bubble</object>
+						<p>Converse with anyone with any language</p>
+					</Grid>
+				</Grid>
+			</Hidden>
 			<Grid item md container>
 				<Grid item xs={1} sm={4}></Grid>
-				<Grid item container xs sm justify="flex-end" alignItems="center">
+				<Grid item container xs justify="flex-end" alignItems="center">
 					<span className={classes.headSpan}>{headSpan}</span>
 					<Button onClick={onToggleClick} className={classes.headButton} variant="contained" size="large">
 						{headButton}
