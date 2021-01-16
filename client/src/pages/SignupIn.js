@@ -1,5 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Grid, Hidden, makeStyles, TextField } from '@material-ui/core';
+import { Button, Grid, Hidden, makeStyles, Snackbar, TextField } from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
 import React, { useLayoutEffect, useState } from "react";
 import { useForm } from 'react-hook-form';
 import { useHistory, withRouter } from 'react-router-dom';
@@ -198,6 +199,11 @@ const SignupInPage = (props) => {
 								<Button type="submit" size="large" variant="contained" color="primary">
 									{submitButton}
 								</Button>
+								<Snackbar open={errors} autoHideDuration={6000}>
+									<MuiAlert elevation={6} variant="filled" severity="error">
+										Form failed validation!
+        					</MuiAlert>
+								</Snackbar>
 							</Grid>
 						</form>
 					</div>
