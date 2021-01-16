@@ -95,9 +95,7 @@ const SignupInPage = (props) => {
 	}
 
 	const onFormSubmit = (value) => {
-		console.log(register);
-		console.log(loginSchema);
-		console.log(errors);
+		console.log(value);
 	}
 
 
@@ -153,7 +151,6 @@ const SignupInPage = (props) => {
 									fullWidth
 									helperText={errors.username ? "Required" : null}
 									error={errors.username ? true : false}
-									required
 									id="username"
 									label="Username"
 								/>
@@ -168,7 +165,6 @@ const SignupInPage = (props) => {
 									inputRef={register}
 									fullWidth
 									helperText={errors.email ? "Required" : null}
-									required={!haveAccount}
 									error={errors.email ? true : false}
 									id="email"
 									type="email"
@@ -185,7 +181,6 @@ const SignupInPage = (props) => {
 									fullWidth
 									helperText="Must be 6+ characters"
 									error={errors.password ? true : false}
-									required
 									id="password"
 									type="password"
 									label="Password"
