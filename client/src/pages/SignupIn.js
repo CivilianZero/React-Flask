@@ -48,17 +48,6 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-// Yup schema
-const loginSchema = yup.object().shape({
-	username: yup.string().required(),
-	email: yup.string().email().required(),
-	password: yup.string().min(6).required()
-});
-const signupSchema = yup.object().shape({
-	...loginSchema,
-	email: yup.string().email().required()
-});
-
 const SignupInPage = (props) => {
 	// Page text stores
 	const signupText = {
@@ -80,9 +69,22 @@ const SignupInPage = (props) => {
 	const classes = useStyles();
 	const history = useHistory();
 
-	// Form setup
-	const { register, handleSubmit, errors } = useForm({
-		resolver: yupResolver(loginSchema)
+	//Form Setup
+	let validationShape = {
+		username: yup.string().required("Required"),
+		password: yup.string().required("Required").min(6, "Must be 6+ characters"),
+		email: yup.string().email("Use proper email format.").required("Required")
+	};
+	if (haveAccount) {
+		validationShape = {
+			username: yup.string().required("Required"),
+			password: yup.string().required("Required").min(6, "Must be 6+ characters"),
+		}
+	}
+	const validationSchema = yup.object().shape(validationShape)
+	const { register, handleSubmit, errors, reset } = useForm({
+		resolver: yupResolver(validationSchema),
+		mode: "onTouched",
 	});
 
 	// Handlers
@@ -98,10 +100,10 @@ const SignupInPage = (props) => {
 		console.log(value);
 	}
 
-
 	// Set state based on url path
 	useLayoutEffect(() => {
 		//TODO: logic for switching submit button function
+		reset()
 		if (props.location.pathname === "/login") {
 			setHaveAccount(true);
 			setTextState(loginText);
@@ -149,14 +151,13 @@ const SignupInPage = (props) => {
 									name="username"
 									inputRef={register}
 									fullWidth
-									helperText={errors.username ? "Required" : null}
+									helperText={errors.username ? errors.username.message : null}
 									error={errors.username ? true : false}
 									id="username"
 									label="Username"
 								/>
 							</Grid>
-							<Grid
-								hidden={haveAccount}
+							{!haveAccount && <Grid
 								item
 								xs={12}
 								className={classes.inputs}>
@@ -164,13 +165,13 @@ const SignupInPage = (props) => {
 									name="email"
 									inputRef={register}
 									fullWidth
-									helperText={errors.email ? "Required" : null}
+									helperText={errors.email ? errors.email.message : null}
 									error={errors.email ? true : false}
 									id="email"
 									type="email"
 									label="E-Mail address"
 								/>
-							</Grid>
+							</Grid>}
 							<Grid
 								item
 								className={classes.inputs}
@@ -179,7 +180,7 @@ const SignupInPage = (props) => {
 									name="password"
 									inputRef={register}
 									fullWidth
-									helperText="Must be 6+ characters"
+									helperText={errors.password ? errors.password.message : "Must be 6+ characters"}
 									error={errors.password ? true : false}
 									id="password"
 									type="password"
