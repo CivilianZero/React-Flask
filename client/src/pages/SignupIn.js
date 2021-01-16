@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Grid, Hidden, makeStyles, Snackbar, TextField } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, withRouter } from 'react-router-dom';
 import * as yup from 'yup';
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 		paddingRight: theme.spacing(4),
 		marginLeft: theme.spacing(4),
 		marginRight: theme.spacing(4),
-		[theme.breakpoints.down("sm")]: {
+		[theme.breakpoints.down('sm')]: {
 			marginTop: theme.spacing(4)
 		}
 	},
@@ -45,16 +45,16 @@ const useStyles = makeStyles((theme) => ({
 		}
 	},
 	bgImg: {
-		backgroundImage: "linear-gradient(to bottom, rgba(58, 141, 255, 0.85), rgb(133, 184, 255, 0.85)), url('/assets/images/bg-img.png')",
-		height: "100vh",
-		backgroundSize: "cover",
+		backgroundImage: 'linear-gradient(to bottom, rgba(58, 141, 255, 0.85), rgb(133, 184, 255, 0.85)), url(\'/assets/images/bg-img.png\')',
+		height: '100vh',
+		backgroundSize: 'cover',
 	},
 	imageText: {
-		marginTop: "40%",
-		color: "white",
-		fontWeight: "600",
+		marginTop: '40%',
+		color: 'white',
+		fontWeight: '600',
 		fontSize: 24,
-		textAlign: "center",
+		textAlign: 'center',
 	}
 }));
 
@@ -82,28 +82,28 @@ const SignupInPage = (props) => {
 
 	//Form Setup
 	let validationShape = {
-		username: yup.string().required("Required"),
-		password: yup.string().required("Required").min(6, "Must be 6+ characters"),
-		email: yup.string().email("Use proper email format.").required("Required")
+		username: yup.string().required('Required'),
+		password: yup.string().required('Required').min(6, 'Must be 6+ characters'),
+		email: yup.string().email('Use proper email format.').required('Required')
 	};
 	if (haveAccount) {
 		validationShape = {
-			username: yup.string().required("Required"),
-			password: yup.string().required("Required").min(6, "Must be 6+ characters"),
+			username: yup.string().required('Required'),
+			password: yup.string().required('Required').min(6, 'Must be 6+ characters'),
 		}
 	}
 	const validationSchema = yup.object().shape(validationShape)
 	const { register, handleSubmit, errors, reset } = useForm({
 		resolver: yupResolver(validationSchema),
-		mode: "onTouched",
+		mode: 'onTouched',
 	});
 
 	// Handlers
 	const onToggleClick = () => {
 		if (haveAccount) {
-			history.push("/signup");
+			history.push('/signup');
 		} else {
-			history.push("/login");
+			history.push('/login');
 		}
 	}
 
@@ -118,7 +118,7 @@ const SignupInPage = (props) => {
 	useLayoutEffect(() => {
 		//TODO: logic for switching submit button function
 		reset()
-		if (props.location.pathname === "/login") {
+		if (props.location.pathname === '/login') {
 			setHaveAccount(true);
 			setTextState(loginText);
 		} else {
@@ -133,18 +133,18 @@ const SignupInPage = (props) => {
 			container
 		>
 			<Hidden smDown>
-				<Grid className={classes.bgImg} item container md={4} justify="center" alignItems="center" alignContent="flex-start">
+				<Grid className={classes.bgImg} item container md={4} justify='center' alignItems='center' alignContent='flex-start'>
 					<Grid item xs={8} className={classes.imageText}>
-						<object data="/assets/images/bubble.svg" type="image/svg+xml" alt="message bubble"></object>
+						<object data='/assets/images/bubble.svg' type='image/svg+xml' aria-label='message bubble'></object>
 						<p>Converse with anyone with any language</p>
 					</Grid>
 				</Grid>
 			</Hidden>
 			<Grid item md container>
 				<Grid item xs={1} sm={4}></Grid>
-				<Grid item container xs justify="flex-end" alignItems="center">
+				<Grid item container xs justify='flex-end' alignItems='center'>
 					<span className={classes.headSpan}>{headSpan}</span>
-					<Button onClick={onToggleClick} className={classes.headButton} variant="contained" size="large">
+					<Button onClick={onToggleClick} className={classes.headButton} variant='contained' size='large'>
 						{headButton}
 					</Button>
 				</Grid>
@@ -152,7 +152,7 @@ const SignupInPage = (props) => {
 					container
 					item
 					xs={12}
-					justify="center">
+					justify='center'>
 					<div className={classes.form}>
 						<h1 className={classes.header}>{header}</h1>
 						<form onSubmit={handleSubmit(onFormSubmit)} noValidate>
@@ -161,13 +161,13 @@ const SignupInPage = (props) => {
 								xs={12}
 								className={classes.inputs}>
 								<TextField
-									name="username"
+									name='username'
 									inputRef={register}
 									fullWidth
 									helperText={errors.username ? errors.username.message : null}
 									error={errors.username ? true : false}
-									id="username"
-									label="Username"
+									id='username'
+									label='Username'
 								/>
 							</Grid>
 							{!haveAccount && <Grid
@@ -175,14 +175,14 @@ const SignupInPage = (props) => {
 								xs={12}
 								className={classes.inputs}>
 								<TextField
-									name="email"
+									name='email'
 									inputRef={register}
 									fullWidth
 									helperText={errors.email ? errors.email.message : null}
 									error={errors.email ? true : false}
-									id="email"
-									type="email"
-									label="E-Mail address"
+									id='email'
+									type='email'
+									label='E-Mail address'
 								/>
 							</Grid>}
 							<Grid
@@ -190,14 +190,14 @@ const SignupInPage = (props) => {
 								className={classes.inputs}
 								xs={12}>
 								<TextField
-									name="password"
+									name='password'
 									inputRef={register}
 									fullWidth
-									helperText={errors.password ? errors.password.message : "Must be 6+ characters"}
+									helperText={errors.password ? errors.password.message : 'Must be 6+ characters'}
 									error={errors.password ? true : false}
-									id="password"
-									type="password"
-									label="Password"
+									id='password'
+									type='password'
+									label='Password'
 								/>
 							</Grid>
 							<Grid
@@ -205,16 +205,16 @@ const SignupInPage = (props) => {
 								container
 								item
 								xs={12}
-								justify="center"
-								alignItems="center"
-								alignContent="center">
-								<Button onClick={handleSnackbar} type="submit" size="large" variant="contained" color="primary">
+								justify='center'
+								alignItems='center'
+								alignContent='center'>
+								<Button onClick={handleSnackbar} type='submit' size='large' variant='contained' color='primary'>
 									{submitButton}
 								</Button>
 								<Snackbar open={openSnackbar && (errors.username || errors.email || errors.password)} autoHideDuration={6000} onClose={closeSnackbar}>
-									<MuiAlert elevation={6} variant="filled" severity="error">
+									<MuiAlert elevation={6} variant='filled' severity='error'>
 										Form failed validation!
-        					</MuiAlert>
+									</MuiAlert>
 								</Snackbar>
 							</Grid>
 						</form>
