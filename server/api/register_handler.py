@@ -8,22 +8,23 @@ class Register(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument("username",
                         type=str,
-                        trim=True,
                         required=True,
+                        trim=True,
                         help="Username is required")
+    parser.add_argument("password",
+                        type=str,
+                        required=True,
+                        trim=True,
+                        help="Password is required")
     parser.add_argument("email",
                         type=str,
                         trim=True,
                         required=True,
                         help="Email is required")
-    parser.add_argument("password",
-                        type=str,
-                        trim=True,
-                        required=True,
-                        help="Password is required")
 
-    def post(self):
-        data = self.parser.parse_args()
+    @classmethod
+    def post(cls):
+        data = cls.parser.parse_args()
         user = UserModel(**data)
 
         try:

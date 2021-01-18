@@ -1,10 +1,10 @@
 from flask import Flask
-from flask_jwt import JWT
+from flask_jwt_extended import JWTManager
 from flask_restful import Api
 
 import config
+from api.login_handler import Login
 from api.register_handler import Register
-from api.security import authenticate, identity
 from db import db
 
 app = Flask(__name__)
@@ -20,8 +20,7 @@ def create_tables():
     db.create_all()
 
 
-# /auth route for login/getting auth token
-# @jwt_required() decorator for protected routes
-jwt = JWT(app, authenticate, identity)
+jwt = JWTManager(app)
 
 api.add_resource(Register, "/register")
+api.add_resource(Login, "/login")
