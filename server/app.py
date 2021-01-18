@@ -1,14 +1,17 @@
 from flask import Flask
+from flask_jwt import JWT
 from flask_restful import Api
 
-from api.login_handler import Login
 from api.register_handler import Register
+from api.security import authenticate, identity
+from config import SECRET_KEY
 from db import db
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
+app.secret_key = SECRET_KEY
 db.init_app(app)
 api = Api(app)
 
@@ -18,5 +21,8 @@ def create_tables():
     db.create_all()
 
 
-api.add_resource(Login, "/login")
+# /auth route for login/getting auth token
+# @jwt_required() decorator for protected routes
+jwt = JWT(app, authenticate, identity)
+
 api.add_resource(Register, "/register")

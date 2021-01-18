@@ -10,17 +10,17 @@ class Register(Resource):
                         type=str,
                         trim=True,
                         required=True,
-                        help="This field is required")
+                        help="Username is required")
     parser.add_argument("email",
                         type=str,
                         trim=True,
                         required=True,
-                        help="This field is required")
+                        help="Email is required")
     parser.add_argument("password",
                         type=str,
                         trim=True,
                         required=True,
-                        )
+                        help="Password is required")
 
     def post(self):
         data = self.parser.parse_args()
