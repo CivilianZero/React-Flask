@@ -30,3 +30,4 @@ instance/
 .vscode
 
 config.py
+data.db
