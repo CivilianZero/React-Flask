@@ -1,3 +1,5 @@
+import re
+
 from sqlalchemy.orm import validates
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -5,13 +7,15 @@ from db import db
 
 
 class UserModel(db.Model):
-
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80))
     email = db.Column(db.String(80))
     password_hash = db.Column(db.String(128))
+
+    EMAIL_PATTERN = re.compile(r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)",
+                               re.IGNORECASE)
 
     def __init__(self, username, email, password):
         self.username = username
@@ -41,6 +45,8 @@ class UserModel(db.Model):
     def validate_email(self, _key, email):
         if not email:
             raise AssertionError("No email provided")
+        if not self.EMAIL_PATTERN.match(email):
+            raise AssertionError("Invalid email format provided")
         if UserModel.query.filter_by(email=email).first():
             raise AssertionError("Email already in use")
         return email
