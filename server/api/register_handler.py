@@ -1,21 +1,34 @@
-from flask import request
-from flask_restful import Resource
+from flask_restful import reqparse, Resource
+from sqlalchemy.exc import DatabaseError
+
+from models.user import UserModel
 
 
 class Register(Resource):
-    @staticmethod
-    def post():
-        # TODO: replace dummy_users code with sqlalchemy
-        data = request.get_json()
-        # check if email already in use
+    parser = reqparse.RequestParser()
+    parser.add_argument("username",
+                        type=str,
+                        trim=True,
+                        required=True,
+                        help="This field is required")
+    parser.add_argument("email",
+                        type=str,
+                        trim=True,
+                        required=True,
+                        help="This field is required")
+    parser.add_argument("password",
+                        type=str,
+                        trim=True,
+                        required=True,
+                        )
 
-        # check if username already in use
+    def post(self):
+        data = self.parser.parse_args()
+        user = UserModel(**data)
 
-        user = {
-            "username": data["username"],
-            "email": data["email"],
-            # TODO: hash this
-            "password": data["password"],
-        }
+        try:
+            user.upsert()
+        except DatabaseError as error:
+            return {"message": "An error occurred while saving to database. Error: {}".format(error)}, 500
 
-        return user, 200
+        return user.json(), 201
