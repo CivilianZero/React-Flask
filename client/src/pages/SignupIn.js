@@ -17,6 +17,8 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(4),
     marginRight: theme.spacing(4),
     [theme.breakpoints.down('sm')]: {
+      margin: theme.spacing(1),
+      padding: theme.spacing(2),
       marginTop: theme.spacing(4)
     }
   },
@@ -62,18 +64,20 @@ const SignupInPage = (props) => {
     header: 'Create an account.',
     headButton: 'Login',
     headSpan: 'Already have an account?',
-    submitButton: 'Create'
+    submitButton: 'Create',
+    snackText: 'Form failed validation!'
   }
   const loginText = {
     header: 'Welcome back!',
     headButton: 'Create Account',
     headSpan: 'Don\'t have an account?',
-    submitButton: 'Login'
+    submitButton: 'Login',
+    snackText: 'Form failed validation!'
   }
   // State vars/hooks
   const [haveAccount, setHaveAccount] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [{ header, headButton, headSpan, submitButton }, setTextState] = useState(signupText);
+  const [{ header, headButton, headSpan, submitButton, snackText }, setTextState] = useState(signupText);
 
   const classes = useStyles();
   const history = useHistory();
@@ -151,8 +155,8 @@ const SignupInPage = (props) => {
         </Grid>
       </Hidden>
       <Grid item md container>
-        <Grid item xs={1} sm={4}></Grid>
-        <Grid item container xs justify='flex-end' alignItems='center'>
+        <Grid item xs sm={4}></Grid>
+        <Grid item container xs={12} justify='flex-end' alignItems='center' alignContent='center'>
           <span className={classes.headSpan}>{headSpan}</span>
           <Button onClick={onToggleClick} className={classes.headButton} variant='contained' size='large'>
             {headButton}
@@ -223,8 +227,8 @@ const SignupInPage = (props) => {
                 </Button>
                 <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={closeSnackbar}>
                   <MuiAlert elevation={6} variant='filled' severity='error'>
-                    Form failed validation!
-									</MuiAlert>
+                    {snackText}
+                  </MuiAlert>
                 </Snackbar>
               </Grid>
             </form>
