@@ -1,11 +1,11 @@
 from flask import Flask
-from api.ping_handler import ping_handler
-from api.home_handler import home_handler
+from flask_restful import Api
 
+from api.login_handler import Login
+from api.register_handler import Register
 
 app = Flask(__name__)
+api = Api(app)
 
-
-app.register_blueprint(home_handler)
-app.register_blueprint(ping_handler)
-
+api.add_resource(Login, "/login")
+api.add_resource(Register, "/register")
