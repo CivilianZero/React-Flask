@@ -1,32 +1,28 @@
 {
-    "env": {
-        "browser": true,
-        "es2020": true
+  "env": {
+    "browser": true,
+    "es2020": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
     },
-    "extends": [
-        "eslint:recommended",
-				"plugin:react/recommended",
-				"plugin:jsx-a11y/recommended",
-				"plugin:react-hooks/recommended"
-    ],
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": 11,
-        "sourceType": "module"
-    },
-    "plugins": [
-				"react",
-				"react-hooks",
-				"jsx-a11y"
-    ],
-    "rules": {
-			"quotes": [ 1, "single"],
-			"jsx-quotes": [ 1, "prefer-single"],
-			// interferes with react-hooks
-			"react/prop-types": 0,
-			// not necesarry and can cause problems
-			"react-hooks/exhaustive-deps": 0
-    }
+    "ecmaVersion": 11,
+    "sourceType": "module"
+  },
+  "plugins": ["react", "react-hooks", "jsx-a11y"],
+  "rules": {
+    "quotes": [1, "single"],
+    "jsx-quotes": [1, "prefer-single"],
+    // interferes with react-hooks
+    "react/prop-types": 0,
+    // not necesarry and can cause problems
+    "react-hooks/exhaustive-deps": 0
+  }
 }
