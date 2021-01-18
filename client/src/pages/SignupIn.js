@@ -45,12 +45,14 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
     backgroundSize: 'cover',
   },
-  imageText: {
+  imageTextDiv: {
     marginTop: '40%',
+    textAlign: 'center',
+  },
+  imageText: {
     color: 'white',
     fontWeight: '600',
     fontSize: 24,
-    textAlign: 'center',
   }
 }));
 
@@ -142,9 +144,9 @@ const SignupInPage = (props) => {
           justify='center'
           alignItems='center'
           alignContent='flex-start'>
-          <Grid item xs={8} className={classes.imageText}>
+          <Grid item xs={8} className={classes.imageTextDiv}>
             <object data='/assets/images/bubble.svg' type='image/svg+xml' aria-label='message bubble'></object>
-            <Typography variant='p' color='initial'>Converse with anyone with any language</Typography>
+            <Typography className={classes.imageText} color='initial'>Converse with anyone with any language</Typography>
           </Grid>
         </Grid>
       </Hidden>
