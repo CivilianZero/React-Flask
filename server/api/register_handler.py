@@ -1,7 +1,7 @@
 from flask_restful import reqparse, Resource
 from sqlalchemy.exc import DatabaseError
 
-from models.User import User
+from models.UserModel import UserModel
 
 
 class Register(Resource):
@@ -25,11 +25,11 @@ class Register(Resource):
     @classmethod
     def post(cls):
         data = cls.parser.parse_args()
-        user = User(**data)
+        user = UserModel(**data)
 
         try:
             user.upsert()
         except DatabaseError as error:
-            return {"message": "An error occurred while saving to database. Error: {}".format(error)}, 500
+            return {"message": "An error occurred while saving user to database. Error: {}".format(error)}, 500
 
         return user.to_json(), 201
