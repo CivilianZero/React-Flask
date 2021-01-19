@@ -31,3 +31,4 @@ instance/
 
 config.py
 data.db
+migrations/
