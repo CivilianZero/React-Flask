@@ -1,11 +1,7 @@
 from sqlalchemy.orm import backref
 
 from db import db
-
-user_conversations = db.Table("user_conversations",
-                              db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
-                              db.Column("conversation_id", db.Integer, db.ForeignKey("conversation.id"),
-                                        primary_key=True))
+from models.UserModel import UserModel
 
 
 class ConversationModel(db.Model):
@@ -21,7 +17,9 @@ class ConversationModel(db.Model):
     def find_by_id(cls, conversation_id):
         return cls.query.get(conversation_id)
 
-    def upsert(self, user):
+    def upsert(self, user: UserModel, target_user: UserModel):
         user.conversations.append(self)
+        target_user.conversations.append(self)
         db.session.add(user)
+        db.session.add(target_user)
         db.session.commit()

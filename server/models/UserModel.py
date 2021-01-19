@@ -7,6 +7,10 @@ from db import db
 from models import ConversationModel
 
 EMAIL_PATTERN = re.compile(r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)", re.IGNORECASE)
+user_conversations = db.Table("user_conversations",
+                              db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
+                              db.Column("conversation_id", db.Integer, db.ForeignKey("conversation.id"),
+                                        primary_key=True))
 
 
 class UserModel(db.Model):
@@ -16,7 +20,7 @@ class UserModel(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
-    conversations = db.relationship("ConversationModel", secondary=ConversationModel.user_conversations, backref="user",
+    conversations = db.relationship("ConversationModel", secondary=user_conversations, backref="user",
                                     lazy=True)
 
     def __init__(self, username, email, password):

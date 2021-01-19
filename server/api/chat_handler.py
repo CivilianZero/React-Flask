@@ -11,8 +11,8 @@ from models.UserModel import UserModel
 
 class Chat(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument("target_user",
-                        type=int,
+    parser.add_argument("target_username",
+                        type=str,
                         required=True,
                         trim=True,
                         help="Username of target is required")
@@ -20,12 +20,14 @@ class Chat(Resource):
     @classmethod
     @jwt_required
     def post(cls):
+        data = cls.parser.parse_args()
         conversation = ConversationModel()
         user_id = get_jwt_identity()
         user = UserModel.find_by_id(user_id)
+        target_user = UserModel.find_by_username(data["target_username"])
 
         try:
-            conversation.upsert(user)
+            conversation.upsert(user, target_user)
         except DatabaseError as error:
             return {"message": "An error occurred while creating a new chat in the database. Error: {}".format(error)}
 
@@ -52,7 +54,7 @@ class Message(Resource):
 
     @classmethod
     @jwt_required
-    def post(cls, user):
+    def post(cls):
         data = cls.parser.parse_args()
         message = MessageModel(**data)
 
