@@ -14,12 +14,6 @@ app.config.from_object(config)
 db.init_app(app)
 api = Api(app)
 
-
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
-
 jwt = JWTManager(app)
 
 api.add_resource(Register, "/register")

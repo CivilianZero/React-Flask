@@ -4,15 +4,17 @@ from sqlalchemy.orm import validates
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from db import db
+from models import Chat
 
 
-class UserModel(db.Model):
+class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80))
-    email = db.Column(db.String(80))
-    password_hash = db.Column(db.String(128))
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(80), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    chats = db.relationship("Chat", secondary=Chat.chats, backref="user", lazy=True)
 
     EMAIL_PATTERN = re.compile(r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)",
                                re.IGNORECASE)
@@ -20,7 +22,7 @@ class UserModel(db.Model):
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
-        self.password_hash = UserModel.set_password(password)
+        self.password_hash = User.set_password(password)
 
     @staticmethod
     def set_password(password):
@@ -47,7 +49,7 @@ class UserModel(db.Model):
             raise AssertionError("No email provided")
         if not self.EMAIL_PATTERN.match(email):
             raise AssertionError("Invalid email format provided")
-        if UserModel.query.filter_by(email=email).first():
+        if User.query.filter_by(email=email).first():
             raise AssertionError("Email already in use")
         return email
 

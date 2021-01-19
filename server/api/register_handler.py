@@ -1,7 +1,7 @@
 from flask_restful import reqparse, Resource
 from sqlalchemy.exc import DatabaseError
 
-from models.user import UserModel
+from models.User import User
 
 
 class Register(Resource):
@@ -25,7 +25,7 @@ class Register(Resource):
     @classmethod
     def post(cls):
         data = cls.parser.parse_args()
-        user = UserModel(**data)
+        user = User(**data)
 
         try:
             user.upsert()
