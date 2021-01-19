@@ -65,5 +65,5 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def json(self):
+    def to_json(self):
         return {'username': self.username, 'email': self.email}

@@ -32,4 +32,4 @@ class Register(Resource):
         except DatabaseError as error:
             return {"message": "An error occurred while saving to database. Error: {}".format(error)}, 500
 
-        return user.json(), 201
+        return user.to_json(), 201
