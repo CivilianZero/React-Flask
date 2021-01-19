@@ -7,7 +7,7 @@ Since the downloadable installer doesn't work in MacOS anymore, use homebrew:
     - Restart servers: `brew services restart postgres`
 3. Launch CLI: `psql postgres`
 4. Create message_app db: `CREATE DATABASE message_app;`
-5. Set `SQLALCHEMY_DATABASE_URI` to `"sqlite:///data.db"` in `config.py`
+5. Set `SQLALCHEMY_DATABASE_URI` to `"postgresql://localhost:5432/message_app"` in `config.py`
 6. `config.py` will also need a `SECRET_KEY` attr for auth to work
 ### Windows
 https://www.postgresql.org/download/windows/
