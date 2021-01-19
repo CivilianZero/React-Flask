@@ -1,3 +1,5 @@
+from sqlalchemy.orm import backref
+
 from db import db
 
 chats = db.Table("chats",
@@ -9,4 +11,4 @@ class Chat(db.Model):
     __tablename__ = "chats"
 
     id = db.Column(db.Integer, primary_key=True)
-    messages = db.relationship("Message", backref="chat", lazy=False)
+    messages = db.relationship("Message", backref("chat", lazy=True), lazy=False)
