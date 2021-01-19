@@ -9,6 +9,7 @@ class MessageModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(360))
     timestamp = db.Column(db.DateTime(timezone=True), nullable=False)
+    conversation_id = db.Column(db.Integer, ForeignKey("conversation.id"), nullable=False)
     user_id = db.Column(db.Integer, ForeignKey("user.id"), nullable=False)
 
     def __init__(self, text, timestamp, user_id):
