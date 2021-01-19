@@ -17,4 +17,5 @@ https://www.postgresql.org/download/linux/
 After installing project dependencies, open a terminal in the server folder and run the following commands in order:  
 1. `python manage.py db init`
 2. `python manage.py db migrate`
-3. `pipenv run flask run`
+3. `python manage.py db update`
+4 `pipenv run flask run`
