@@ -29,8 +29,5 @@ instance/
 # VSCode
 .vscode
 
-# Nova
-.nova
-
-#TODO add .env to your gitignore
-
+config.py
+data.db
