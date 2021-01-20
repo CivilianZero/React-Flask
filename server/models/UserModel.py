@@ -4,7 +4,6 @@ from sqlalchemy.orm import validates
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from db import db
-from models import ConversationModel
 
 EMAIL_PATTERN = re.compile(r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)", re.IGNORECASE)
 user_conversations = db.Table("user_conversations",
@@ -22,6 +21,7 @@ class UserModel(db.Model):
     password_hash = db.Column(db.String(128), nullable=False)
     conversations = db.relationship("ConversationModel", secondary=user_conversations, backref="user",
                                     lazy=True)
+    messages = db.relationship("MessageModel", backref="user", lazy=True)
 
     def __init__(self, username, email, password):
         self.username = username

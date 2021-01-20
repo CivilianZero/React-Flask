@@ -12,13 +12,21 @@ class MessageModel(db.Model):
     conversation_id = db.Column(db.Integer, ForeignKey("conversation.id"), nullable=False)
     user_id = db.Column(db.Integer, ForeignKey("user.id"), nullable=False)
 
-    def __init__(self, text, timestamp, user_id):
+    def __init__(self, text, timestamp, conversation_id):
         self.text = text
         self.timestamp = timestamp
-        self.user_id = user_id
+        self.conversation_id = conversation_id
 
-    def upsert(self):
-        pass
+    @classmethod
+    def find_all_by_user(cls, user_id):
+        return cls.query.filter_by(user_id=user_id).all()
+
+    def upsert(self, user, conversation):
+        conversation.messages.append(self)
+        user.messages.append(self)
+        db.session.add(conversation)
+        db.session.add(user)
+        db.session.commit()
 
     def to_json(self):
-        pass
+        return {"text": self.text, "timestamp": self.timestamp.__str__(), "conversation_id": self.conversation_id}
