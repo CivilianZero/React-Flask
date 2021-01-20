@@ -93,9 +93,8 @@ class Message(Resource):
 class MessageList(Resource):
     @classmethod
     @jwt_required
-    def get(cls):
-        user_id = get_jwt_identity()
-        messages = MessageModel.find_all_by_user(user_id)
+    def get(cls, conversation_id):
+        messages = MessageModel.find_all_in_conversation(conversation_id)
         message_json_list = []
         for message in messages:
             message_json = MessageModel.to_json(message)

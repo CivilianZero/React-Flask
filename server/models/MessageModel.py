@@ -21,6 +21,10 @@ class MessageModel(db.Model):
     def find_all_by_user(cls, user_id):
         return cls.query.filter_by(user_id=user_id).all()
 
+    @classmethod
+    def find_all_in_conversation(cls, conversation_id):
+        return cls.query.filter_by(conversation_id=conversation_id).all()
+
     def upsert(self, user, conversation):
         conversation.messages.append(self)
         user.messages.append(self)

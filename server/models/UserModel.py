@@ -65,6 +65,10 @@ class UserModel(db.Model):
     def find_by_id(cls, user_id):
         return cls.query.get(user_id)
 
+    @classmethod
+    def get_all(cls):
+        return cls.query.all()
+
     def upsert(self):
         db.session.add(self)
         db.session.commit()

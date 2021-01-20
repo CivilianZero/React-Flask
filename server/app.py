@@ -6,6 +6,7 @@ import config
 from api.chat_handler import Chat, Message, ChatList, MessageList
 from api.login_handler import Login, TokenRefresh
 from api.register_handler import Register
+from api.user_handler import UserList
 from db import db
 
 app = Flask(__name__)
@@ -23,4 +24,5 @@ api.add_resource(TokenRefresh, "/refresh")
 api.add_resource(Chat, "/chat", "/chat/<string:name>")
 api.add_resource(ChatList, "/conversations")
 api.add_resource(Message, "/send")
-api.add_resource(MessageList, "/messages")
+api.add_resource(MessageList, "/messages/<int:conversation_id>")
+api.add_resource(UserList, "/users")
