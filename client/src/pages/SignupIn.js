@@ -24,7 +24,10 @@ const useStyles = makeStyles((theme) => ({
   },
   headSpan: {
     color: 'grey',
-    fontWeight: 600
+    fontWeight: 600,
+    [theme.breakpoints.down('sm')]: {
+      marginTop: theme.spacing(4)
+    }
   },
   header: {
     paddingLeft: theme.spacing(2),
@@ -114,7 +117,7 @@ const SignupInPage = (props) => {
   }
 
   const handleSnackbar = () => {
-    //TODO: Add server errors once implemented 
+    //TODO: Add server errors once implemented
     if (errors.username || errors.email || errors.password) {
       setOpenSnackbar(true);
     }
@@ -149,14 +152,14 @@ const SignupInPage = (props) => {
           alignItems='center'
           alignContent='flex-start'>
           <Grid item xs={8} className={classes.imageTextDiv}>
-            <object data='/assets/images/bubble.svg' type='image/svg+xml' aria-label='message bubble'></object>
+            <object data='/assets/images/bubble.svg' type='image/svg+xml' aria-label='message bubble'/>
             <Typography className={classes.imageText} color='initial'>Converse with anyone with any language</Typography>
           </Grid>
         </Grid>
       </Hidden>
       <Grid item md container>
-        <Grid item xs sm={4}></Grid>
-        <Grid item container xs={12} justify='flex-end' alignItems='center' alignContent='center'>
+        <Grid item xs sm={4}/>
+        <Grid item container xs={12} sm justify='flex-end' alignItems='center' alignContent='center'>
           <span className={classes.headSpan}>{headSpan}</span>
           <Button onClick={onToggleClick} className={classes.headButton} variant='contained' size='large'>
             {headButton}
@@ -179,7 +182,7 @@ const SignupInPage = (props) => {
                   inputRef={register}
                   fullWidth
                   helperText={errors.username ? errors.username.message : null}
-                  error={errors.username ? true : false}
+                  error={!!errors.username}
                   id='username'
                   label='Username'
                 />
@@ -193,7 +196,7 @@ const SignupInPage = (props) => {
                   inputRef={register}
                   fullWidth
                   helperText={errors.email ? errors.email.message : null}
-                  error={errors.email ? true : false}
+                  error={!!errors.email}
                   id='email'
                   type='email'
                   label='E-Mail address'
@@ -208,7 +211,7 @@ const SignupInPage = (props) => {
                   inputRef={register}
                   fullWidth
                   helperText={errors.password ? errors.password.message : 'Must be 6+ characters'}
-                  error={errors.password ? true : false}
+                  error={!!errors.password}
                   id='password'
                   type='password'
                   label='Password'
