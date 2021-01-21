@@ -7,9 +7,9 @@ from db import db
 
 EMAIL_PATTERN = re.compile(r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)", re.IGNORECASE)
 user_conversations = db.Table("user_conversations",
-                              db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
                               db.Column("conversation_id", db.Integer, db.ForeignKey("conversation.id"),
-                                        primary_key=True))
+                                        primary_key=True),
+                              db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True))
 
 
 class UserModel(db.Model):

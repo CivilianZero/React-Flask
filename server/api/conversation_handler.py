@@ -2,7 +2,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource, reqparse
 from sqlalchemy.exc import DatabaseError
 
-from models.ConversationModel import ConversationModel
+from models.ConversationModel import ConversationModel, ConversationExists
 from models.UserModel import UserModel
 
 
@@ -39,7 +39,11 @@ class Conversation(Resource):
         conversation = ConversationModel()
 
         try:
+            if ConversationModel.find_by_target_user(user_id, target_user.id):
+                raise ConversationExists(user_id, target_user.id)
             conversation.upsert(user, target_user)
+        except ConversationExists as error:
+            return {"message": "Duplicate entry. Error: {}".format(error)}, 409
         except AttributeError as error:
             return {"message": "Target user does not exist in the database. Error: {}".format(error)}, 404
         except DatabaseError as error:
