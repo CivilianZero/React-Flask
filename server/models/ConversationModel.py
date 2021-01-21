@@ -21,8 +21,8 @@ class ConversationModel(db.Model):
     @classmethod
     def find_by_target_user(cls, user_id, target_username):
         target_user = UserModel.find_by_username(target_username)
-        conversation_set_user = cls.get_conversation_ids_from_list(cls.find_all_by_user(user_id))
-        conversation_set_target_user = cls.get_conversation_ids_from_list(cls.find_all_by_user(target_user.id))
+        conversation_set_user = cls.get_conversation_ids_for_user(user_id)
+        conversation_set_target_user = cls.get_conversation_ids_for_user(target_user.id)
         return list(conversation_set_user & conversation_set_target_user)[0]
 
     @classmethod
@@ -31,15 +31,16 @@ class ConversationModel(db.Model):
 
     @classmethod
     def get_all_for_current_user(cls, user_id):
-        conversation_json = {}
-        list_of_conversations = cls.find_all_by_user(user_id)
-        for i, conv in enumerate(list_of_conversations, start=1):
-            for _, user_id in cls.find_all_by_id(conv.conversation_id):
-                user = UserModel.find_by_id(user_id)
-                if user_id != conv.user_id:
-                    conversation_json["Conversation {}".format(i)] = {"user": user.username,
-                                                                      "chat_id": conv.conversation_id}
-        return conversation_json
+        conversation_id_list = cls.get_conversation_ids_for_user(user_id)
+        uc_columns = user_conversations.columns
+        conversation_list = db.session.query(user_conversations).filter(
+            uc_columns["conversation_id"].in_(conversation_id_list)).filter(uc_columns["user_id"] != user_id).all()
+
+        conversation_list_json = []
+        for conv in conversation_list:
+            user = UserModel.find_by_id(conv.user_id)
+            conversation_list_json.append({"user": user.username, "conversation_id": conv.conversation_id})
+        return conversation_list_json
 
     def upsert(self, user, target_user):
         user.conversations.append(self)
@@ -48,8 +49,9 @@ class ConversationModel(db.Model):
         db.session.add(target_user)
         db.session.commit()
 
-    @staticmethod
-    def get_conversation_ids_from_list(conversation_list):
+    @classmethod
+    def get_conversation_ids_for_user(cls, user_id):
+        conversation_list = cls.find_all_by_user(user_id)
         id_set = set(conversation_id for conversation_id, user_id in conversation_list)
         return id_set
 
