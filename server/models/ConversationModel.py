@@ -39,7 +39,8 @@ class ConversationModel(db.Model):
             for user_id, chat_id in cls.find_all_by_id(conv.conversation_id):
                 user = UserModel.find_by_id(user_id)
                 if user_id != conv.user_id:
-                    conversation_json["Chat {}".format(i)] = {"user": user.username, "chat_id": conv.conversation_id}
+                    conversation_json["Conversation {}".format(i)] = {"user": user.username,
+                                                                      "chat_id": conv.conversation_id}
         return conversation_json
 
     def upsert(self, user, target_user):

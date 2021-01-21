@@ -1,6 +1,7 @@
 from sqlalchemy import ForeignKey
 
 from db import db
+from models.UserModel import UserModel
 
 
 class MessageModel(db.Model):
@@ -33,4 +34,6 @@ class MessageModel(db.Model):
         db.session.commit()
 
     def to_json(self):
-        return {"text": self.text, "timestamp": self.timestamp.__str__(), "conversation_id": self.conversation_id}
+        user = UserModel.find_by_id(self.user_id)
+        return {"text": self.text, "timestamp": self.timestamp.__str__(), "sender": user.username,
+                "conversation_id": self.conversation_id}

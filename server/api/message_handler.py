@@ -7,50 +7,6 @@ from models.MessageModel import MessageModel
 from models.UserModel import UserModel
 
 
-class Chat(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument("target_username",
-                        type=str,
-                        required=True,
-                        trim=True,
-                        help="Username of target is required")
-
-    @classmethod
-    @jwt_required
-    def get(cls, name):
-        user_id = get_jwt_identity()
-        return ConversationModel.find_by_target_user(user_id, name)
-
-    @classmethod
-    @jwt_required
-    def post(cls):
-        data = cls.parser.parse_args()
-        target_user = UserModel.find_by_username(data["target_username"])
-
-        user_id = get_jwt_identity()
-        user = UserModel.find_by_id(user_id)
-
-        conversation = ConversationModel()
-
-        try:
-            conversation.upsert(user, target_user)
-        except AttributeError as error:
-            return {"message": "Target user does not exist in the database. Error: {}".format(error)}, 404
-        except DatabaseError as error:
-            return {"message": "An error occurred while creating a new chat in the database. Error: {}".format(
-                error)}, 500
-
-        return 201
-
-
-class ChatList(Resource):
-    @classmethod
-    @jwt_required
-    def get(cls):
-        user_id = get_jwt_identity()
-        return ConversationModel.get_all_for_current_user(user_id), 201
-
-
 class Message(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument("text",
