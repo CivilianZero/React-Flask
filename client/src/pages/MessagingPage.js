@@ -29,6 +29,13 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     padding: 0,
   },
+  searchInput: {
+    padding: theme.spacing(1),
+    height: '50px',
+    '& > .MuiFilledInput-input': {
+      paddingTop: '10px',
+    },
+  },
 }));
 
 const MessagingPage = () => {

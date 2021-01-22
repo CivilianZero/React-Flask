@@ -12,7 +12,7 @@ const MessageMenu = ({classes}) => {
         </Grid>
         <Grid container item alignItems='stretch' justify='flex-start'>
           <Typography variant='h3'>Chats</Typography>
-          <FilledInput label='Search' fullWidth startAdornment={
+          <FilledInput className={classes.searchInput} placeholder='Search' fullWidth disableUnderline startAdornment={
             <Search/>
           }/>
           <List>
@@ -21,7 +21,7 @@ const MessageMenu = ({classes}) => {
                 <Person/>
               </ListItemIcon>
               <ListItemText
-                  primary='Single-line item'
+                  primary='Jeff Jeffty'
               />
             </ListItem>
           </List>
