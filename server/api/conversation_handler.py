@@ -36,14 +36,15 @@ class Conversation(Resource):
         user_id = get_jwt_identity()
         user = UserModel.find_by_id(user_id)
 
-        conversation = ConversationModel()
-
         try:
             if ConversationModel.find_by_target_user(user_id, target_user.id):
                 raise ConversationExists(user_id, target_user.id)
-            conversation.upsert(user, target_user)
+            conversation = ConversationModel()
         except ConversationExists as error:
             return {"message": "Duplicate entry. Error: {}".format(error)}, 409
+
+        try:
+            conversation.upsert(user, target_user)
         except AttributeError as error:
             return {"message": "Target user does not exist in the database. Error: {}".format(error)}, 404
         except DatabaseError as error:
