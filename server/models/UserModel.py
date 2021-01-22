@@ -5,17 +5,23 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from db import db
 
+EMAIL_PATTERN = re.compile(r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)", re.IGNORECASE)
+user_conversations = db.Table("user_conversations",
+                              db.Column("conversation_id", db.Integer, db.ForeignKey("conversation.id"),
+                                        primary_key=True),
+                              db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True))
+
 
 class UserModel(db.Model):
-    __tablename__ = "users"
+    __tablename__ = "user"
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80))
-    email = db.Column(db.String(80))
-    password_hash = db.Column(db.String(128))
-
-    EMAIL_PATTERN = re.compile(r"([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)",
-                               re.IGNORECASE)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(80), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    conversations = db.relationship("ConversationModel", secondary=user_conversations, backref="user",
+                                    lazy=True)
+    messages = db.relationship("MessageModel", backref="user", lazy=True)
 
     def __init__(self, username, email, password):
         self.username = username
@@ -45,7 +51,7 @@ class UserModel(db.Model):
     def validate_email(self, _key, email):
         if not email:
             raise AssertionError("No email provided")
-        if not self.EMAIL_PATTERN.match(email):
+        if not EMAIL_PATTERN.match(email):
             raise AssertionError("Invalid email format provided")
         if UserModel.query.filter_by(email=email).first():
             raise AssertionError("Email already in use")
@@ -57,11 +63,15 @@ class UserModel(db.Model):
 
     @classmethod
     def find_by_id(cls, user_id):
-        return cls.query.filter_by(id=user_id).first()
+        return cls.query.get(user_id)
+
+    @classmethod
+    def get_all(cls):
+        return cls.query.all()
 
     def upsert(self):
         db.session.add(self)
         db.session.commit()
 
-    def json(self):
-        return {'username': self.username, 'email': self.email}
+    def to_json(self):
+        return {"username": self.username, "email": self.email}
