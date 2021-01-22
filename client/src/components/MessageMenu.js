@@ -1,9 +1,36 @@
-import { FilledInput, Grid, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
+import {
+  FilledInput,
+  Grid,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
 import { Person, Search } from '@material-ui/icons';
-import React from 'react';
+import React, { useEffect } from 'react';
 
-const MessageMenu = ({classes}) => {
+const useStyles = makeStyles((theme) => ({
+  menuRoot: {
+    height: '100%',
+    padding: 0,
+  },
+  searchInput: {
+    padding: theme.spacing(1),
+    height: '50px',
+    '& > .MuiFilledInput-input': {
+      paddingTop: '10px',
+    },
+  },
+}));
 
+const MessageMenu = () => {
+  const classes = useStyles();
+
+  useEffect(() => {
+    // fetch()
+  }, []);
 
   return (
       <Grid className={classes.menuRoot} container direction='column'>

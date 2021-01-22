@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 
@@ -13,6 +14,7 @@ from db import db
 app = Flask(__name__)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
+CORS(app)
 app.config.from_object(config)
 db.init_app(app)
 api = Api(app)

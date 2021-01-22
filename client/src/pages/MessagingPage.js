@@ -25,17 +25,6 @@ const useStyles = makeStyles((theme) => ({
   noMaxWidth: {
     maxWidth: 'none',
   },
-  menuRoot: {
-    height: '100%',
-    padding: 0,
-  },
-  searchInput: {
-    padding: theme.spacing(1),
-    height: '50px',
-    '& > .MuiFilledInput-input': {
-      paddingTop: '10px',
-    },
-  },
 }));
 
 const MessagingPage = () => {
@@ -44,7 +33,7 @@ const MessagingPage = () => {
   return (
       <Grid container className={classes.root} spacing={3}>
         <Grid item sm={3}>
-          <MessageMenu classes={classes}/>
+          <MessageMenu/>
         </Grid>
         <Grid container item sm direction='column' alignItems='stretch'>
           <Grid className={classes.noMaxWidth} item xs={1}>

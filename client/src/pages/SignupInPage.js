@@ -2,6 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Grid, Hidden, makeStyles, Snackbar, TextField, Typography } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import React, { useLayoutEffect, useState } from 'react';
+import { useCookies, withCookies } from 'react-cookie';
 import { useForm } from 'react-hook-form';
 import { useHistory, withRouter } from 'react-router-dom';
 import * as yup from 'yup';
@@ -68,19 +69,23 @@ const SignupInPage = (props) => {
     headButton: 'Login',
     headSpan: 'Already have an account?',
     submitButton: 'Create',
-    snackText: 'Form failed validation!',
   };
   const loginText = {
     header: 'Welcome back!',
     headButton: 'Create Account',
     headSpan: 'Don\'t have an account?',
     submitButton: 'Login',
-    snackText: 'Form failed validation!',
+  };
+  const snackTextState = {
+    formVal: 'Form failed to validate!',
   };
   // State vars/hooks
   const [haveAccount, setHaveAccount] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [{header, headButton, headSpan, submitButton, snackText}, setTextState] = useState(signupText);
+  const [{header, headButton, headSpan, submitButton}, setTextState] = useState(signupText);
+  const [{snackText, alertSeverity}, setSnackConfig] = useState();
+
+  const [cookies, setCookies] = useCookies();
 
   const classes = useStyles();
   const history = useHistory();
@@ -113,20 +118,74 @@ const SignupInPage = (props) => {
   };
 
   const onFormSubmit = (value) => {
-    console.log(value);
+    let status;
+    if (haveAccount) {
+      fetch('http://127.0.0.1:5000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: value.username,
+          password: value.password,
+        }),
+      }).then(
+          res => {
+            status = res.status;
+            if (status < 400) {
+              const {access_token, refresh_token} = res;
+              setCookies('access_token', access_token);
+              setCookies('refresh_token', refresh_token);
+              history.push('/messaging');
+            } else throw Error(res.message);
+          },
+      ).catch(
+          err => {
+            setSnackConfig({snackText: err.message, alertSeverity: 'error'});
+            setOpenSnackbar(true);
+          },
+      );
+    } else if (!haveAccount) {
+      fetch('http://127.0.0.1:5000/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: {
+          username: value.username,
+          email: value.email,
+          password: value.password,
+        },
+      }).then(
+          res => {
+            status = res.status;
+            if (status < 500) {
+              console.log(res.message);
+              setSnackConfig({snackText: 'Successfully Registered!', alertSeverity: 'success'});
+              history.push('/login');
+            } else throw Error(res.message);
+          },
+      ).catch(
+          err => {
+            // TODO: possibly change this error message on backend or find a better way to display, might be kind of long
+            setSnackConfig({snackText: err.message, alertSeverity: 'error'});
+            setOpenSnackbar(true);
+          },
+      );
+    }
   };
 
   const handleSnackbar = () => {
-    //TODO: Add server errors once implemented
     if (errors.username || errors.email || errors.password) {
+      setSnackConfig({snackText: snackTextState.formVal, alertSeverity: 'error'});
       setOpenSnackbar(true);
+
     }
   };
   const closeSnackbar = () => setOpenSnackbar(false);
 
   // Set state based on url path
   useLayoutEffect(() => {
-    //TODO: logic for switching submit button function
     reset();
     if (props.location.pathname === '/login') {
       setHaveAccount(true);
@@ -230,7 +289,7 @@ const SignupInPage = (props) => {
                     {submitButton}
                   </Button>
                   <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={closeSnackbar}>
-                    <MuiAlert elevation={6} variant='filled' severity='error'>
+                    <MuiAlert elevation={6} variant='filled' severity={alertSeverity}>
                       {snackText}
                     </MuiAlert>
                   </Snackbar>
@@ -243,4 +302,4 @@ const SignupInPage = (props) => {
   );
 };
 
-export default withRouter(SignupInPage);
+export default withRouter(withCookies(SignupInPage));
