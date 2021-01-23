@@ -64,4 +64,4 @@ class ConversationList(Resource):
             return ConversationModel.get_all_for_current_user(user_id), 201
         except DatabaseError as error:
             return {"message": "An error occurred while retrieving all conversations in the database. Error: {}".format(
-                error)}
+                error)}, 500

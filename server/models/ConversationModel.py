@@ -39,7 +39,7 @@ class ConversationModel(db.Model):
         conversation_list_json = []
         for conv in conversation_list:
             user = UserModel.find_by_id(conv.user_id)
-            conversation_list_json.append({"user": user.username, "conversation_id": conv.conversation_id})
+            conversation_list_json.append({"username": user.username, "conversation_id": conv.conversation_id})
         return conversation_list_json
 
     def upsert(self, user, target_user):

@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Grid, Hidden, makeStyles, Snackbar, TextField, Typography } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import React, { useLayoutEffect, useState } from 'react';
-import { useCookies, withCookies } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 import { useForm } from 'react-hook-form';
 import { useHistory, withRouter } from 'react-router-dom';
 import * as yup from 'yup';
@@ -83,8 +83,9 @@ const SignupInPage = (props) => {
   const [haveAccount, setHaveAccount] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [{header, headButton, headSpan, submitButton}, setTextState] = useState(signupText);
-  const [{snackText, alertSeverity}, setSnackConfig] = useState();
+  const [{snackText, alertSeverity}, setSnackConfig] = useState({snackText: '', alertSeverity: 'error'});
 
+  // eslint-disable-next-line no-unused-vars
   const [cookies, setCookies] = useCookies();
 
   const classes = useStyles();
@@ -120,7 +121,7 @@ const SignupInPage = (props) => {
   const onFormSubmit = (value) => {
     let status;
     if (haveAccount) {
-      fetch('http://127.0.0.1:5000/login', {
+      fetch(`${process.env.REACT_APP_BASE_URL}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -132,11 +133,16 @@ const SignupInPage = (props) => {
       }).then(
           res => {
             status = res.status;
+            return res.json();
+          },
+      ).then(
+          res => {
             if (status < 400) {
               const {access_token, refresh_token} = res;
               setCookies('access_token', access_token);
               setCookies('refresh_token', refresh_token);
               history.push('/messaging');
+              console.log('in here');
             } else throw Error(res.message);
           },
       ).catch(
@@ -146,21 +152,22 @@ const SignupInPage = (props) => {
           },
       );
     } else if (!haveAccount) {
-      fetch('http://127.0.0.1:5000/register', {
+      fetch(`${process.env.REACT_APP_BASE_URL}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: {
+        body: JSON.stringify({
           username: value.username,
           email: value.email,
           password: value.password,
-        },
+        }),
       }).then(
+          res => res.json(),
+      ).then(
           res => {
             status = res.status;
             if (status < 500) {
-              console.log(res.message);
               setSnackConfig({snackText: 'Successfully Registered!', alertSeverity: 'success'});
               history.push('/login');
             } else throw Error(res.message);
@@ -302,4 +309,4 @@ const SignupInPage = (props) => {
   );
 };
 
-export default withRouter(withCookies(SignupInPage));
+export default withRouter(SignupInPage);

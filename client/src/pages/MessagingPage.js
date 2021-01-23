@@ -2,7 +2,7 @@ import { FilledInput, Grid, IconButton, InputAdornment, makeStyles, Paper, Typog
 import { InsertEmoticonOutlined } from '@material-ui/icons';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import MessageMenu from '../components/MessageMenu';
+import ChatMenu from '../components/ChatMenu';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +33,7 @@ const MessagingPage = () => {
   return (
       <Grid container className={classes.root} spacing={3}>
         <Grid item sm={3}>
-          <MessageMenu/>
+          <ChatMenu/>
         </Grid>
         <Grid container item sm direction='column' alignItems='stretch'>
           <Grid className={classes.noMaxWidth} item xs={1}>
