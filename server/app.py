@@ -13,8 +13,6 @@ from db import db
 app = Flask(__name__)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
-app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
-app.config['JWT_REFRESH_LIFESPAN'] = {'days': 30}
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 app.config['JWT_ACCESS_CSRF_HEADER_NAME'] = "X-CSRF-TOKEN-ACCESS"

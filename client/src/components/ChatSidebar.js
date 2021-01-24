@@ -1,6 +1,7 @@
 import { FilledInput, Grid, makeStyles, Typography } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
+import { authFetch } from '../services/AuthFetch';
 import UserChatList from './UserChatList';
 
 const useStyles = makeStyles((theme) => ({
@@ -27,17 +28,17 @@ const ChatSidebar = ({onSelectChat}) => {
 
   useEffect(() => {
     let status;
-    fetch('/chats', {
+    authFetch('/chats', {
       method: 'GET',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRF-TOKEN-ACCESS': 'csrf_access_token',
       },
     }).then(
         res => {
           status = res.status;
           return res.json();
-
         },
     ).then(
         res => {
@@ -46,7 +47,7 @@ const ChatSidebar = ({onSelectChat}) => {
         },
     ).catch(
         err => {
-          console.log(err.message);
+          console.log(err);
         },
     );
   }, []);

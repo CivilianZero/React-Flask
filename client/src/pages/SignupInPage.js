@@ -87,8 +87,6 @@ const SignupInPage = (props) => {
   const classes = useStyles();
   const history = useHistory();
 
-  const baseUrl = process.env.REACT_APP_BASE_URL;
-
   //Form Setup
   let validationShape = {
     username: yup.string().required('Required'),
@@ -119,43 +117,6 @@ const SignupInPage = (props) => {
   const onFormSubmit = (value) => {
     let status;
     if (haveAccount) {
-      //   const res = useFetch(`${baseUrl}/login`, {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //     },
-      //     body: JSON.stringify({
-      //       username: value.username,
-      //       password: value.password,
-      //     }),
-      //   });
-      //   if (res.response) {
-      //     const {access_token, refresh_token} = res.response;
-      //     setCookies('access_token', access_token);
-      //     setCookies('refresh_token', refresh_token);
-      //     history.push('/messaging');
-      //   } else if (res.error) {
-      //     setSnackConfig({snackText: res.error.message, alertSeverity: 'error'});
-      //     setOpenSnackbar(true);
-      //   }
-      // } else if (!haveAccount) {
-      //   const res = useFetch(`${baseUrl}/register`, {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //     },
-      //     body: JSON.stringify({
-      //       username: value.username,
-      //       password: value.password,
-      //     }),
-      //   });
-      //   if (res.response) {
-      //     setSnackConfig({snackText: 'Successfully Registered!', alertSeverity: 'success'});
-      //     history.push('/login');
-      //   } else if (res.error) {
-      //     setSnackConfig({snackText: res.error, alertSeverity: 'error'});
-      //     throw Error(res.error)
-      //   }
       fetch('/login', {
         method: 'POST',
         credentials: 'include',
@@ -174,7 +135,7 @@ const SignupInPage = (props) => {
       ).then(
           res => {
             if (status < 400) {
-              // history.push('/messaging');
+              history.push('/messaging');
             } else throw Error(res.message);
           },
       ).catch(
@@ -195,10 +156,12 @@ const SignupInPage = (props) => {
           password: value.password,
         }),
       }).then(
-          res => res.json(),
-      ).then(
           res => {
             status = res.status;
+            return res.json();
+          },
+      ).then(
+          res => {
             if (status < 500) {
               setSnackConfig({snackText: 'Successfully Registered!', alertSeverity: 'success'});
               history.push('/login');

@@ -61,7 +61,7 @@ class ConversationList(Resource):
         user_id = get_jwt_identity()
 
         try:
-            return ConversationModel.get_all_for_current_user(user_id), 201
+            return ConversationModel.get_all_for_current_user(user_id), 200
         except DatabaseError as error:
             return {"message": "An error occurred while retrieving all conversations in the database. Error: {}".format(
                 error)}, 500
