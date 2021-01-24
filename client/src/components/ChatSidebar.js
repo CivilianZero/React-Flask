@@ -1,7 +1,7 @@
 import { FilledInput, Grid, makeStyles, Typography } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
-import { authFetch, getCsrfCookies } from '../services/AuthFetch';
+import { authFetch } from '../services/AuthFetch';
 import UserChatList from './UserChatList';
 
 const useStyles = makeStyles((theme) => ({
@@ -28,15 +28,7 @@ const ChatSidebar = ({onSelectChat}) => {
 
   useEffect(() => {
     let status;
-    const cookies = getCsrfCookies();
-    authFetch('/chats', {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN-ACCESS': cookies['csrf_access_token'],
-      },
-    }).then(
+    authFetch('/chats', {}).then(
         res => {
           if (res) {
             status = res.status;
