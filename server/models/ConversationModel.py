@@ -60,6 +60,6 @@ class ConversationExists(Exception):
     def __init__(self, user_id, target_user_id, ):
         self.user_id = user_id
         self.target_user_id = target_user_id
-        self.message = "Conversation between users with IDs {} and {} already exists in database".format(user_id,
-                                                                                                         target_user_id)
-        Exception.__init__(self, self.message)
+        self.msg = "Conversation between users with IDs {} and {} already exists in database".format(user_id,
+                                                                                                     target_user_id)
+        Exception.__init__(self, self.msg)

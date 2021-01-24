@@ -136,11 +136,11 @@ const SignupInPage = (props) => {
           res => {
             if (status < 400) {
               history.push('/messaging');
-            } else throw Error(res.message);
+            } else throw Error(res['msg']);
           },
       ).catch(
           err => {
-            setSnackConfig({snackText: err.message, alertSeverity: 'error'});
+            setSnackConfig({snackText: err['msg'], alertSeverity: 'error'});
             setOpenSnackbar(true);
           },
       );
@@ -165,12 +165,12 @@ const SignupInPage = (props) => {
             if (status < 500) {
               setSnackConfig({snackText: 'Successfully Registered!', alertSeverity: 'success'});
               history.push('/login');
-            } else throw Error(res.message);
+            } else throw Error(res['msg']);
           },
       ).catch(
           err => {
             // TODO: possibly change this error message on backend or find a better way to display, might be kind of long
-            setSnackConfig({snackText: err.message, alertSeverity: 'error'});
+            setSnackConfig({snackText: err['msg'], alertSeverity: 'error'});
             setOpenSnackbar(true);
           },
       );

@@ -31,7 +31,7 @@ class Login(Resource):
             set_access_cookies(response, access_token)
             set_refresh_cookies(response, refresh_token)
             return response
-        return {"message": "Invalid credentials"}, 401
+        return {"msg": "Invalid credentials"}, 401
 
 
 class TokenRefresh(Resource):
@@ -41,7 +41,7 @@ class TokenRefresh(Resource):
         try:
             new_token = create_access_token(identity=current_user, fresh=False)
         except Exception as error:
-            return {"message": "Error: {}".format(error)}
+            return {"msg": "Error: {}".format(error)}
         else:
             response = jsonify({"refresh": True})
             set_access_cookies(response, new_token)

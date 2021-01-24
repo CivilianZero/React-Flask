@@ -41,7 +41,7 @@ class Message(Resource):
         try:
             message.upsert(user, conversation)
         except DatabaseError as error:
-            return {"message": "An error occurred while saving message to database. Error: {}".format(error)}
+            return {"msg": "An error occurred while saving message to database. Error: {}".format(error)}
 
         return 201
 

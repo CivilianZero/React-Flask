@@ -5,7 +5,7 @@ from models.UserModel import UserModel
 
 
 class MessageModel(db.Model):
-    __tablename__ = "message"
+    __tablename__ = "msg"
 
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(360))

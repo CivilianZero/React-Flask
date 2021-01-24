@@ -1,7 +1,7 @@
 import { FilledInput, Grid, makeStyles, Typography } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
-import { authFetch } from '../services/AuthFetch';
+import { authFetch, getCsrfCookies } from '../services/AuthFetch';
 import UserChatList from './UserChatList';
 
 const useStyles = makeStyles((theme) => ({
@@ -28,22 +28,25 @@ const ChatSidebar = ({onSelectChat}) => {
 
   useEffect(() => {
     let status;
+    const cookies = getCsrfCookies();
     authFetch('/chats', {
       method: 'GET',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-TOKEN-ACCESS': 'csrf_access_token',
+        'X-CSRF-TOKEN-ACCESS': cookies['csrf_access_token'],
       },
     }).then(
         res => {
-          status = res.status;
-          return res.json();
+          if (res) {
+            status = res.status;
+            return res.json();
+          } else throw Error('Failed to refresh token. Please log in again.');
         },
     ).then(
         res => {
           if (status < 500) setUserChats(res);
-          else throw Error(res.message);
+          else throw Error(res['msg']);
         },
     ).catch(
         err => {

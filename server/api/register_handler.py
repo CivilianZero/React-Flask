@@ -30,6 +30,6 @@ class Register(Resource):
         try:
             user.upsert()
         except DatabaseError as error:
-            return {"message": "An error occurred while saving new user to database. Error: {}".format(error)}, 500
+            return {"msg": "An error occurred while saving new user to database. Error: {}".format(error)}, 500
 
         return user.to_json(), 201
