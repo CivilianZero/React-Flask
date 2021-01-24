@@ -2,7 +2,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Grid, Hidden, makeStyles, Snackbar, TextField, Typography } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import React, { useLayoutEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
 import { useForm } from 'react-hook-form';
 import { useHistory, withRouter } from 'react-router-dom';
 import * as yup from 'yup';
@@ -85,9 +84,6 @@ const SignupInPage = (props) => {
   const [{header, headButton, headSpan, submitButton}, setTextState] = useState(signupText);
   const [{snackText, alertSeverity}, setSnackConfig] = useState({snackText: '', alertSeverity: 'error'});
 
-  // eslint-disable-next-line no-unused-vars
-  const [cookies, setCookies] = useCookies();
-
   const classes = useStyles();
   const history = useHistory();
 
@@ -121,6 +117,7 @@ const SignupInPage = (props) => {
   };
 
   const onFormSubmit = (value) => {
+    let status;
     if (haveAccount) {
       //   const res = useFetch(`${baseUrl}/login`, {
       //     method: 'POST',
@@ -159,8 +156,7 @@ const SignupInPage = (props) => {
       //     setSnackConfig({snackText: res.error, alertSeverity: 'error'});
       //     throw Error(res.error)
       //   }
-      let status;
-      fetch(`${baseUrl}/login`, {
+      fetch('/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -177,10 +173,7 @@ const SignupInPage = (props) => {
       ).then(
           res => {
             if (status < 400) {
-              const {access_token, refresh_token} = res;
-              setCookies('access_token', access_token);
-              setCookies('refresh_token', refresh_token);
-              history.push('/messaging');
+              // history.push('/messaging');
             } else throw Error(res.message);
           },
       ).catch(
@@ -190,7 +183,7 @@ const SignupInPage = (props) => {
           },
       );
     } else if (!haveAccount) {
-      fetch(`${baseUrl}/register`, {
+      fetch('/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

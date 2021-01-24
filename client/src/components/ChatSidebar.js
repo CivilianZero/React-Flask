@@ -1,7 +1,6 @@
 import { FilledInput, Grid, makeStyles, Typography } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
 import UserChatList from './UserChatList';
 
 const useStyles = makeStyles((theme) => ({
@@ -23,17 +22,16 @@ const useStyles = makeStyles((theme) => ({
 
 const ChatSidebar = ({onSelectChat}) => {
   const [userChats, setUserChats] = useState([]);
-  const [cookies] = useCookies(['access_token', 'refresh_token']);
 
   const classes = useStyles();
 
   useEffect(() => {
     let status;
-    fetch(`${process.env.REACT_APP_BASE_URL}/chats`, {
+    fetch('/chats', {
       method: 'GET',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${cookies['access_token']}`,
       },
     }).then(
         res => {
