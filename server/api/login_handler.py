@@ -29,8 +29,8 @@ class Login(Resource):
             refresh_token = create_refresh_token(user.id)
             response = jsonify({"login": True})
             set_access_cookies(response, access_token)
-            set_refresh_cookies(response, access_token)
-            return response, 200
+            set_refresh_cookies(response, refresh_token)
+            return response
         return {"message": "Invalid credentials"}, 401
 
 
@@ -39,6 +39,6 @@ class TokenRefresh(Resource):
     def post(self):
         current_user = get_jwt_identity()
         new_token = create_access_token(identity=current_user, fresh=False)
-        response = jsonify({"refresh": True})
+        response = jsonify({"access_token": new_token})
         set_access_cookies(response, new_token)
-        return response, 200
+        return response
