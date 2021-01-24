@@ -20,7 +20,7 @@ class Conversation(Resource):
         user_id = get_jwt_identity()
 
         try:
-            return ConversationModel.find_by_target_user(user_id, username), 201
+            return ConversationModel.find_by_target_user(user_id, username), 200
         except AttributeError as error:
             return {"message": "Target user does not exist in the database. Error: {}".format(error)}, 404
         except DatabaseError as error:

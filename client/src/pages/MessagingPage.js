@@ -1,8 +1,9 @@
 import { FilledInput, Grid, IconButton, InputAdornment, makeStyles, Paper, Typography } from '@material-ui/core';
 import { InsertEmoticonOutlined } from '@material-ui/icons';
-import React from 'react';
+import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import ChatMenu from '../components/ChatMenu';
+import ChatPane from '../components/ChatPane';
+import ChatSidebar from '../components/ChatSidebar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,12 +29,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const MessagingPage = () => {
+  const [selectedChat, setSelectedChat] = useState('');
   const classes = useStyles();
+
+  const onSelectChat = (conversation_id) => {
+    setSelectedChat(conversation_id);
+  };
 
   return (
       <Grid container className={classes.root} spacing={3}>
         <Grid item sm={3}>
-          <ChatMenu/>
+          <ChatSidebar onSelectChat={onSelectChat}/>
         </Grid>
         <Grid container item sm direction='column' alignItems='stretch'>
           <Grid className={classes.noMaxWidth} item xs={1}>
@@ -43,7 +49,7 @@ const MessagingPage = () => {
           </Grid>
           <Grid container item xs direction='column' alignItems='stretch'>
             <Grid className={classes.noMaxWidth} item xs={10}>
-              {/*	messages go here */}
+              <ChatPane selectedChat={selectedChat}/>
             </Grid>
             <Grid container item xs>
               <FilledInput className={classes.chatInput} fullWidth disableUnderline

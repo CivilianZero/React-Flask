@@ -91,6 +91,8 @@ const SignupInPage = (props) => {
   const classes = useStyles();
   const history = useHistory();
 
+  const baseUrl = process.env.REACT_APP_BASE_URL;
+
   //Form Setup
   let validationShape = {
     username: yup.string().required('Required'),
@@ -119,9 +121,46 @@ const SignupInPage = (props) => {
   };
 
   const onFormSubmit = (value) => {
-    let status;
     if (haveAccount) {
-      fetch(`${process.env.REACT_APP_BASE_URL}/login`, {
+      //   const res = useFetch(`${baseUrl}/login`, {
+      //     method: 'POST',
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //     },
+      //     body: JSON.stringify({
+      //       username: value.username,
+      //       password: value.password,
+      //     }),
+      //   });
+      //   if (res.response) {
+      //     const {access_token, refresh_token} = res.response;
+      //     setCookies('access_token', access_token);
+      //     setCookies('refresh_token', refresh_token);
+      //     history.push('/messaging');
+      //   } else if (res.error) {
+      //     setSnackConfig({snackText: res.error.message, alertSeverity: 'error'});
+      //     setOpenSnackbar(true);
+      //   }
+      // } else if (!haveAccount) {
+      //   const res = useFetch(`${baseUrl}/register`, {
+      //     method: 'POST',
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //     },
+      //     body: JSON.stringify({
+      //       username: value.username,
+      //       password: value.password,
+      //     }),
+      //   });
+      //   if (res.response) {
+      //     setSnackConfig({snackText: 'Successfully Registered!', alertSeverity: 'success'});
+      //     history.push('/login');
+      //   } else if (res.error) {
+      //     setSnackConfig({snackText: res.error, alertSeverity: 'error'});
+      //     throw Error(res.error)
+      //   }
+      let status;
+      fetch(`${baseUrl}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -142,7 +181,6 @@ const SignupInPage = (props) => {
               setCookies('access_token', access_token);
               setCookies('refresh_token', refresh_token);
               history.push('/messaging');
-              console.log('in here');
             } else throw Error(res.message);
           },
       ).catch(
@@ -152,7 +190,7 @@ const SignupInPage = (props) => {
           },
       );
     } else if (!haveAccount) {
-      fetch(`${process.env.REACT_APP_BASE_URL}/register`, {
+      fetch(`${baseUrl}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -186,7 +224,6 @@ const SignupInPage = (props) => {
     if (errors.username || errors.email || errors.password) {
       setSnackConfig({snackText: snackTextState.formVal, alertSeverity: 'error'});
       setOpenSnackbar(true);
-
     }
   };
   const closeSnackbar = () => setOpenSnackbar(false);

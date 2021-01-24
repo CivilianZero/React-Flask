@@ -11,4 +11,4 @@ class UserList(Resource):
         user_list = []
         for user in UserModel.get_all():
             user_list.append(user.to_json())
-        return user_list, 201
+        return user_list, 200

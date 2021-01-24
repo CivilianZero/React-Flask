@@ -56,4 +56,4 @@ class MessageList(Resource):
             message_json = MessageModel.to_json(message)
             message_json_list.append(message_json)
         message_json_list.sort(key=lambda x: x["timestamp"])
-        return message_json_list, 201
+        return message_json_list, 200

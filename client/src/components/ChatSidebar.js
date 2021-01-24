@@ -16,9 +16,12 @@ const useStyles = makeStyles((theme) => ({
       paddingTop: '10px',
     },
   },
+  noMaxWidth: {
+    maxWidth: 'none',
+  },
 }));
 
-const ChatMenu = () => {
+const ChatSidebar = ({onSelectChat}) => {
   const [userChats, setUserChats] = useState([]);
   const [cookies] = useCookies(['access_token', 'refresh_token']);
 
@@ -26,7 +29,6 @@ const ChatMenu = () => {
 
   useEffect(() => {
     let status;
-    console.log(`Bearer ${cookies['access_token']}`);
     fetch(`${process.env.REACT_APP_BASE_URL}/chats`, {
       method: 'GET',
       headers: {
@@ -41,7 +43,6 @@ const ChatMenu = () => {
         },
     ).then(
         res => {
-          console.log(res);
           if (status < 500) setUserChats(res);
           else throw Error(res.message);
         },
@@ -62,10 +63,10 @@ const ChatMenu = () => {
           <FilledInput className={classes.searchInput} placeholder='Search' fullWidth disableUnderline startAdornment={
             <Search/>
           }/>
-          <UserChatList userChats={userChats}/>
+          <UserChatList userChats={userChats} onSelectChat={onSelectChat}/>
         </Grid>
       </Grid>
   );
 };
 
-export default ChatMenu;
+export default ChatSidebar;
