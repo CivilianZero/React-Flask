@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ChatSidebar = ({onSelectChat}) => {
+const ChatSidebar = ({onSelectChat, currentUser}) => {
   const [userChats, setUserChats] = useState([]);
 
   const classes = useStyles();
@@ -41,16 +41,14 @@ const ChatSidebar = ({onSelectChat}) => {
           else throw Error(res['msg']);
         },
     ).catch(
-        err => {
-          console.log(err);
-        },
+        err => console.log(err),
     );
   }, []);
 
   return (
       <Grid className={classes.menuRoot} container direction='column'>
         <Grid className={classes.noMaxWidth} item xs={1}>
-          Logged In User
+          {currentUser['username']}
         </Grid>
         <Grid container item alignItems='stretch' justify='flex-start'>
           <Typography variant='h3'>Chats</Typography>

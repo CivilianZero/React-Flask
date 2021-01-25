@@ -7,7 +7,7 @@ from api.conversation_handler import Conversation, ConversationList
 from api.login_handler import Login, TokenRefresh
 from api.message_handler import Message, MessageList
 from api.register_handler import Register
-from api.user_handler import UserList
+from api.user_handler import UserList, User
 from db import db
 
 app = Flask(__name__)
@@ -31,4 +31,5 @@ api.add_resource(Conversation, "/chat", "/chat/<string:username>")
 api.add_resource(ConversationList, "/chats")
 api.add_resource(Message, "/message")
 api.add_resource(MessageList, "/messages/<int:conversation_id>")
+api.add_resource(User, "/user")
 api.add_resource(UserList, "/users")

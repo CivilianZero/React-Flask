@@ -33,10 +33,8 @@ export const authFetch = (url, {
           },
       ).catch(
           () => {
-            console.log(tries);
             tries -= 1;
             if (tries >= 0) {
-              console.log('in tries');
               fetch('/refresh', {
                 method: 'POST',
                 credentials: 'include',
@@ -48,14 +46,11 @@ export const authFetch = (url, {
               }).then(res => res.json()).then(
                   res => {
                     cookies = getCsrfCookies();
-                    console.log(res);
                     if (res.status < 400) return () => repeatFetch();
                     else throw Error(res['msg']);
                   },
               ).catch(
-                  err => {
-                    console.log(err);
-                  },
+                  err => console.log(err),
               );
             }
           },

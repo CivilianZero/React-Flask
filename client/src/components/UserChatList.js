@@ -14,14 +14,17 @@ const useStyle = makeStyles((theme) => ({
 const UserChatList = ({userChats, onSelectChat}) => {
   const classes = useStyle();
 
-  const chatList = userChats.map((user) =>
-      <ListItem key={user['conversation_id']} className={classes.userItem} button
-                onClick={() => onSelectChat(user['conversation_id'])}>
+  const chatList = userChats.map((chat) =>
+      <ListItem key={chat['conversation_id']} className={classes.userItem} button
+                onClick={() => onSelectChat({
+                  selectedChatUsername: chat['username'],
+                  selectedChatId: chat['conversation_id'],
+                })}>
         <ListItemIcon>
           <Person/>
         </ListItemIcon>
         <ListItemText
-            primary={user['username']}
+            primary={chat['username']}
         />
       </ListItem>,
   );

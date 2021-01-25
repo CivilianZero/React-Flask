@@ -36,4 +36,4 @@ class MessageModel(db.Model):
     def to_json(self):
         user = UserModel.find_by_id(self.user_id)
         return {"text": self.text, "timestamp": self.timestamp.__str__(), "sender": user.username,
-                "conversation_id": self.conversation_id, "id": self.id}
+                "conversation_id": self.conversation_id, "id": self.id, "sender_id": user.id}
