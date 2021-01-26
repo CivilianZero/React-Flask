@@ -1,19 +1,28 @@
 import { Grid, makeStyles, Paper } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { authFetch } from '../services/AuthFetch';
+import { fetchRetry } from '../services/FetchRetry';
 
 const useStyles = makeStyles((theme) => ({
+  messageContainer: {
+    height: '100%',
+    overflowY: 'scroll',
+    paddingTop: theme.spacing(2),
+  },
   messageBubble: {
-    color: '#D8D8D8',
+    display: 'inline-block',
+    fontWeight: '600',
     padding: theme.spacing(2),
   },
   yourMessage: {
+    float: 'right',
+    color: 'white',
     borderRadius: '10px 0px 10px 10px',
-    background: '#F4F6FA',
+    background: 'linear-gradient(to right, #3A8DFF, #6CC1FF)',
   },
   theirMessage: {
+    color: 'grey',
     borderRadius: '0px 10px 10px 10px',
-    background: 'linear-gradient(to right, #3A8DFF, #6CC1FF)',
+    background: '#e7e9ee',
   },
 }));
 
@@ -24,8 +33,9 @@ const ChatPane = ({selectedChat, currentUser}) => {
   useEffect(() => {
     let status;
     if (selectedChat) {
-      authFetch(`/messages/${selectedChat}`, {}).then(
+      fetchRetry(`/messages/${selectedChat}`, {}).then(
           res => {
+            console.log(res);
             status = res.status;
             return res.json();
           },
@@ -41,7 +51,7 @@ const ChatPane = ({selectedChat, currentUser}) => {
   }, [selectedChat]);
 
   return (
-      <Grid container>
+      <Grid container className={classes.messageContainer}>
         {messages.map((message) =>
             (<Grid key={message.id} container item
                    direction={message['sender_id'] === currentUser['id'] ? 'row-reverse' : 'row'}>

@@ -1,4 +1,4 @@
-from flask import jsonify, make_response
+from flask import jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_refresh_token_required, get_jwt_identity, \
     set_access_cookies, set_refresh_cookies
 from flask_restful import Resource, reqparse
@@ -30,7 +30,7 @@ class Login(Resource):
             response = jsonify({"username": user.username, "email": user.email, "user_id": user.id})
             set_access_cookies(response, access_token)
             set_refresh_cookies(response, refresh_token)
-            return make_response(response, 200)
+            return response
         return {"msg": "Invalid credentials"}, 401
 
 
@@ -45,4 +45,4 @@ class TokenRefresh(Resource):
         else:
             response = jsonify({"refresh": True})
             set_access_cookies(response, new_token)
-            return make_response(response, 200)
+            return response

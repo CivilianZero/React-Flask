@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import ChatPane from '../components/ChatPane';
 import ChatSidebar from '../components/ChatSidebar';
-import { authFetch } from '../services/AuthFetch';
+import { fetchRetry } from '../services/FetchRetry';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,12 +36,10 @@ const MessagingPage = () => {
 
   useEffect(() => {
     let status;
-    authFetch('/user', {}).then(
+    fetchRetry('/user', {}).then(
         res => {
-          if (res) {
-            status = res.status;
-            return res.json();
-          } else throw Error('Failed to refresh token. Please log in again.');
+          status = res.status;
+          return res.json();
         },
     ).then(
         res => {

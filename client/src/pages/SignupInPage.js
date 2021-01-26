@@ -129,6 +129,7 @@ const SignupInPage = (props) => {
         }),
       }).then(
           res => {
+            console.log(res);
             status = res.status;
             return res.json();
           },

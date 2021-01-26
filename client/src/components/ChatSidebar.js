@@ -1,7 +1,7 @@
 import { FilledInput, Grid, makeStyles, Typography } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
-import { authFetch } from '../services/AuthFetch';
+import { fetchRetry } from '../services/FetchRetry';
 import UserChatList from './UserChatList';
 
 const useStyles = makeStyles((theme) => ({
@@ -28,12 +28,10 @@ const ChatSidebar = ({onSelectChat, currentUser}) => {
 
   useEffect(() => {
     let status;
-    authFetch('/chats', {}).then(
+    fetchRetry('/chats', {}).then(
         res => {
-          if (res) {
-            status = res.status;
-            return res.json();
-          } else throw Error('Failed to refresh token. Please log in again.');
+          status = res.status;
+          return res.json();
         },
     ).then(
         res => {
