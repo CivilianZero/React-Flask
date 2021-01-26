@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
     '& > .MuiFilledInput-input': {
       paddingTop: '10px',
     },
+    borderRadius: '10px',
   },
   noMaxWidth: {
     maxWidth: 'none',

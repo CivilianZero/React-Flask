@@ -9,21 +9,22 @@ const getCsrfCookies = () => {
   }
   return cookieObj;
 };
-let cookies = getCsrfCookies();
 
 export const fetchRetry = async (url, {
   method = 'GET',
   credentials = 'include',
-  headers = {
+  body = null,
+}, tries = 2) => {
+  let cookies = getCsrfCookies();
+  const headers = {
     'Content-Type': 'application/json',
     'X-CSRF-TOKEN-ACCESS': cookies['csrf_access_token'],
-  },
-}, tries = 2) => {
+  };
   let error;
   for (let i = 0; i < tries; i++) {
-    const response = await fetch(url, {method, credentials, headers});
-    if (!response.ok) {
-      error = response['msg'];
+    const response = await fetch(url, {method, credentials, headers, body});
+    if (!response.ok && response.status === 401) {
+      error = response;
       await fetch('/refresh', {
         method: 'POST',
         credentials: 'include',

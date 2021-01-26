@@ -1,9 +1,9 @@
-import { FilledInput, Grid, IconButton, InputAdornment, makeStyles, Paper, Typography } from '@material-ui/core';
-import { InsertEmoticonOutlined } from '@material-ui/icons';
+import { Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import ChatPane from '../components/ChatPane';
 import ChatSidebar from '../components/ChatSidebar';
+import MessageInput from '../components/MessageInput';
 import { fetchRetry } from '../services/FetchRetry';
 
 const useStyles = makeStyles((theme) => ({
@@ -17,12 +17,9 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
     height: '65px',
   },
-  chatInput: {
-    marginTop: theme.spacing(3),
-    minHeight: '70px',
-    '& > .MuiFilledInput-input': {
-      paddingTop: '10px',
-    },
+  messagePaneContainer: {
+    position: 'relative',
+    maxHeight: '100%',
   },
   noMaxWidth: {
     maxWidth: 'none',
@@ -32,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
 const MessagingPage = () => {
   const [{selectedChatId, selectedChatUsername}, setSelectedChat] = useState({});
   const [currentUser, setCurrentUser] = useState({username: '', id: '', email: ''});
+  const [newMessage, setNewMessage] = useState({});
   const classes = useStyles();
 
   useEffect(() => {
@@ -51,6 +49,20 @@ const MessagingPage = () => {
     );
   }, []);
 
+  const sendMessage = (event) => {
+    if (event.key === 'Enter' && selectedChatId) {
+      const newMessageObj = {
+        text: event.target.value,
+        timestamp: new Date().toISOString(),
+        conversation_id: selectedChatId,
+        user_id: currentUser['id'],
+        id: event.timeStamp,
+      };
+      setNewMessage(newMessageObj);
+      event.target.value = null;
+    }
+  };
+
   return (
       <Grid container className={classes.root} spacing={3}>
         <Grid item sm={3}>
@@ -63,18 +75,11 @@ const MessagingPage = () => {
             </Paper>
           </Grid>
           <Grid container item xs direction='column' alignItems='stretch'>
-            <Grid className={classes.noMaxWidth} item xs={10}>
-              <ChatPane selectedChat={selectedChatId} currentUser={currentUser}/>
+            <Grid className={`${classes.noMaxWidth} ${classes.messagePaneContainer}`} item xs={10}>
+              <ChatPane selectedChat={selectedChatId} currentUser={currentUser} newMessage={newMessage}/>
             </Grid>
             <Grid container item xs>
-              <FilledInput className={classes.chatInput} fullWidth disableUnderline
-                           placeholder='Type Something...' endAdornment={
-                <InputAdornment position='end'>
-                  <IconButton aria-label='emoji button'>
-                    <InsertEmoticonOutlined/>
-                  </IconButton>
-                </InputAdornment>
-              }/>
+              <MessageInput sendMessage={sendMessage}/>
             </Grid>
           </Grid>
         </Grid>

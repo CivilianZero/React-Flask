@@ -1,12 +1,17 @@
 import { Grid, makeStyles, Paper } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { fetchRetry } from '../services/FetchRetry';
 
 const useStyles = makeStyles((theme) => ({
   messageContainer: {
     height: '100%',
-    overflowY: 'scroll',
+    position: 'absolute',
+    bottom: '0px',
+    overflowY: 'auto',
     paddingTop: theme.spacing(2),
+  },
+  messageRow: {
+    margin: theme.spacing(1),
   },
   messageBubble: {
     display: 'inline-block',
@@ -26,38 +31,76 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ChatPane = ({selectedChat, currentUser}) => {
+const ChatPane = ({selectedChat, currentUser, newMessage}) => {
   const [messages, setMessages] = useState([]);
+  const messageRef = useRef(null);
   const classes = useStyles();
 
-  useEffect(() => {
+  const updateMessages = () => {
     let status;
+    fetchRetry(`/messages/${selectedChat}`, {}).then(
+        res => {
+          status = res.status;
+          return res.json();
+        },
+    ).then(
+        res => {
+          if (status < 400) {
+            setMessages(res);
+            messageRef.current['scrollIntoView']();
+          } else throw Error(res['msg']);
+        },
+    ).catch(
+        err => console.log(err),
+    );
+  };
+
+  useEffect(() => {
     if (selectedChat) {
-      fetchRetry(`/messages/${selectedChat}`, {}).then(
+      updateMessages();
+    }
+  }, [selectedChat]);
+
+  useEffect(() => {
+    if (newMessage.text && newMessage.text.length > 0) {
+      setMessages([...messages, newMessage]);
+      setTimeout(() => messageRef.current['scrollIntoView']());
+      let status;
+      console.log(newMessage.text, newMessage.timestamp, newMessage.conversation_id);
+      fetchRetry('/message', {
+        method: 'POST', body: JSON.stringify({
+          text: newMessage.text,
+          timestamp: newMessage.timestamp,
+          conversation_id: newMessage.conversation_id,
+        }),
+      }).then(
           res => {
-            console.log(res);
             status = res.status;
             return res.json();
           },
       ).then(
           res => {
-            if (status < 400) setMessages(res);
-            else throw Error(res['msg']);
+            if (status < 500) {
+              updateMessages();
+            } else throw Error(res['msg']);
           },
       ).catch(
-          err => console.log(err),
+          err => {
+            // TODO: add snackbar maybe to show if message didn't send?
+            console.log(err);
+          },
       );
     }
-  }, [selectedChat]);
+  }, [newMessage]);
 
   return (
       <Grid container className={classes.messageContainer}>
         {messages.map((message) =>
-            (<Grid key={message.id} container item
-                   direction={message['sender_id'] === currentUser['id'] ? 'row-reverse' : 'row'}>
+            (<Grid key={message.id} container item className={classes.messageRow}
+                   direction={message['user_id'] === currentUser['id'] ? 'row-reverse' : 'row'}>
               <Grid item sm={5} xs={7}>
-                <Paper elevation={0}
-                       className={`${classes.messageBubble}  ${message['sender_id'] === currentUser['id'] ? classes.yourMessage : classes.theirMessage}`}>
+                <Paper ref={messageRef} elevation={0}
+                       className={`${classes.messageBubble}  ${message['user_id'] === currentUser['id'] ? classes.yourMessage : classes.theirMessage}`}>
                   {message['text']}
                 </Paper>
               </Grid>
