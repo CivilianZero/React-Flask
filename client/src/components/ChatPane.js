@@ -12,6 +12,9 @@ const useStyles = makeStyles((theme) => ({
   },
   messageRow: {
     margin: theme.spacing(1),
+    '& small': {
+      color: '#BECCE2',
+    },
   },
   messageBubble: {
     display: 'inline-block',
@@ -27,7 +30,10 @@ const useStyles = makeStyles((theme) => ({
   theirMessage: {
     color: 'grey',
     borderRadius: '0px 10px 10px 10px',
-    background: '#e7e9ee',
+    background: '#F4F6FA',
+  },
+  smallRight: {
+    textAlign: 'right',
   },
 }));
 
@@ -99,6 +105,9 @@ const ChatPane = ({selectedChat, currentUser, newMessage}) => {
             (<Grid key={message.id} container item className={classes.messageRow}
                    direction={message['user_id'] === currentUser['id'] ? 'row-reverse' : 'row'}>
               <Grid item sm={5} xs={7}>
+                <div className={message['user_id'] === currentUser['id'] ? classes.smallRight : null}>
+                  <small>{message['sender']} </small><small>{`${new Date(message['timestamp']).getHours()}:${new Date(message['timestamp']).getMinutes()}`}</small>
+                </div>
                 <Paper ref={messageRef} elevation={0}
                        className={`${classes.messageBubble}  ${message['user_id'] === currentUser['id'] ? classes.yourMessage : classes.theirMessage}`}>
                   {message['text']}

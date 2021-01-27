@@ -1,4 +1,5 @@
 import { Grid, makeStyles, Paper, Typography } from '@material-ui/core';
+import { MoreHoriz } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import ChatPane from '../components/ChatPane';
@@ -16,10 +17,13 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     padding: theme.spacing(3),
     height: '65px',
+    '& svg': {
+      color: '#95A7C4',
+    },
   },
   messagePaneContainer: {
     position: 'relative',
-    maxHeight: '100%',
+    // height: '100%',
   },
   noMaxWidth: {
     maxWidth: 'none',
@@ -71,7 +75,14 @@ const MessagingPage = () => {
         <Grid container item sm direction='column' alignItems='stretch'>
           <Grid className={classes.noMaxWidth} item xs={1}>
             <Paper className={classes.statusBar}>
-              <Typography variant='h5'>{selectedChatUsername}</Typography>
+              <Grid container alignItems='center'>
+                <Grid item xs>
+                  <Typography variant='h5'>{selectedChatUsername}</Typography>
+                </Grid>
+                <Grid container item xs={1} alignItems='center'>
+                  <MoreHoriz/>
+                </Grid>
+              </Grid>
             </Paper>
           </Grid>
           <Grid container item xs direction='column' alignItems='stretch'>

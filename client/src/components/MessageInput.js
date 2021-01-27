@@ -4,10 +4,15 @@ import React from 'react';
 
 const useStyles = makeStyles((theme) => ({
   chatInput: {
+    color: '#95A7C4',
+    backgroundColor: '#E9EEF9 !important',
     marginTop: theme.spacing(3),
     minHeight: '70px',
     '& > .MuiFilledInput-input': {
       paddingTop: '10px',
+    },
+    '& svg': {
+      color: '#95A7C4',
     },
     borderRadius: '10px',
   },
