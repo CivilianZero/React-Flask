@@ -19,11 +19,14 @@ class ConversationModel(db.Model):
         return db.session.query(user_conversations).filter_by(user_id=user_id).all()
 
     @classmethod
-    def find_by_target_user(cls, user_id, target_username):
-        target_user = UserModel.find_by_username(target_username)
+    def find_by_target_user(cls, user_id, target_user_id):
         conversation_set_user = cls.get_conversation_ids_for_user(user_id)
-        conversation_set_target_user = cls.get_conversation_ids_for_user(target_user.id)
-        return list(conversation_set_user & conversation_set_target_user)[0]
+        conversation_set_target_user = cls.get_conversation_ids_for_user(target_user_id)
+        shared_chat = list(conversation_set_user & conversation_set_target_user)
+        if len(shared_chat) > 0:
+            return shared_chat[0]
+        else:
+            return None
 
     @classmethod
     def get_conversation(cls, conversation_id):
@@ -53,7 +56,10 @@ class ConversationModel(db.Model):
     def get_conversation_ids_for_user(cls, user_id):
         conversation_list = cls.find_all_by_user(user_id)
         id_set = set(conversation_id for conversation_id, user_id in conversation_list)
-        return id_set
+        if len(id_set) > 0:
+            return id_set
+        else:
+            return None
 
 
 class ConversationExists(Exception):

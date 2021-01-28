@@ -21,9 +21,8 @@ const useStyles = makeStyles((theme) => ({
       color: '#95A7C4',
     },
   },
-  messagePaneContainer: {
+  relative: {
     position: 'relative',
-    // height: '100%',
   },
   noMaxWidth: {
     maxWidth: 'none',
@@ -86,10 +85,10 @@ const MessagingPage = () => {
             </Paper>
           </Grid>
           <Grid container item xs direction='column' alignItems='stretch'>
-            <Grid className={`${classes.noMaxWidth} ${classes.messagePaneContainer}`} item xs={10}>
+            <Grid className={`${classes.noMaxWidth} ${classes.relative}`} item xs={10}>
               <ChatPane selectedChat={selectedChatId} currentUser={currentUser} newMessage={newMessage}/>
             </Grid>
-            <Grid container item xs>
+            <Grid className={classes.relative} container item xs>
               <MessageInput sendMessage={sendMessage}/>
             </Grid>
           </Grid>

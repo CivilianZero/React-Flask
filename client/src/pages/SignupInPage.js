@@ -90,13 +90,13 @@ const SignupInPage = (props) => {
   //Form Setup
   let validationShape = {
     username: yup.string().required('Required'),
-    password: yup.string().required('Required').min(6, 'Must be 6+ characters'),
+    password: yup.string().required('Required').min(7, 'Must be 7+ characters'),
     email: yup.string().email('Use proper email format.').required('Required'),
   };
   if (haveAccount) {
     validationShape = {
       username: yup.string().required('Required'),
-      password: yup.string().required('Required').min(6, 'Must be 6+ characters'),
+      password: yup.string().required('Required').min(7, 'Must be 7+ characters'),
     };
   }
   const validationSchema = yup.object().shape(validationShape);
@@ -129,7 +129,6 @@ const SignupInPage = (props) => {
         }),
       }).then(
           res => {
-            console.log(res);
             status = res.status;
             return res.json();
           },
@@ -171,6 +170,7 @@ const SignupInPage = (props) => {
           },
       ).catch(
           err => {
+            console.log(err);
             // TODO: possibly change this error message on backend or find a better way to display, might be kind of long
             setSnackConfig({snackText: err['msg'], alertSeverity: 'error'});
             setOpenSnackbar(true);
@@ -273,7 +273,7 @@ const SignupInPage = (props) => {
                       name='password'
                       inputRef={register}
                       fullWidth
-                      helperText={errors.password ? errors.password.message : 'Must be 6+ characters'}
+                      helperText={errors.password ? errors.password.message : 'Must be 7+ characters'}
                       error={!!errors.password}
                       id='password'
                       type='password'

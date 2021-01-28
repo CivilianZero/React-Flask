@@ -42,6 +42,12 @@ const ChatPane = ({selectedChat, currentUser, newMessage}) => {
   const messageRef = useRef(null);
   const classes = useStyles();
 
+  const parseDate = (string) => {
+    let t = string.split(/[- :]/);
+    let d = new Date(Date.UTC(t[0], t[1] - 1, t[2], t[3], t[4], t[5]));
+    return `${d.getHours()}:${d.getMinutes()}`;
+  };
+
   const updateMessages = () => {
     let status;
     fetchRetry(`/messages/${selectedChat}`, {}).then(
@@ -72,7 +78,6 @@ const ChatPane = ({selectedChat, currentUser, newMessage}) => {
       setMessages([...messages, newMessage]);
       setTimeout(() => messageRef.current['scrollIntoView']());
       let status;
-      console.log(newMessage.text, newMessage.timestamp, newMessage.conversation_id);
       fetchRetry('/message', {
         method: 'POST', body: JSON.stringify({
           text: newMessage.text,
@@ -106,7 +111,7 @@ const ChatPane = ({selectedChat, currentUser, newMessage}) => {
                    direction={message['user_id'] === currentUser['id'] ? 'row-reverse' : 'row'}>
               <Grid item sm={5} xs={7}>
                 <div className={message['user_id'] === currentUser['id'] ? classes.smallRight : null}>
-                  <small>{message['sender']} </small><small>{`${new Date(message['timestamp']).getHours()}:${new Date(message['timestamp']).getMinutes()}`}</small>
+                  <small>{message['sender']} </small><small>{`${parseDate(message['timestamp'])}`}</small>
                 </div>
                 <Paper ref={messageRef} elevation={0}
                        className={`${classes.messageBubble}  ${message['user_id'] === currentUser['id'] ? classes.yourMessage : classes.theirMessage}`}>

@@ -1,5 +1,6 @@
 import { FilledInput, Grid, makeStyles, Typography } from '@material-ui/core';
 import { MoreHoriz, Search } from '@material-ui/icons';
+import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { fetchRetry } from '../services/FetchRetry';
 import UserChatList from './UserChatList';
@@ -35,10 +36,11 @@ const useStyles = makeStyles((theme) => ({
 
 const ChatSidebar = ({onSelectChat, currentUser}) => {
   const [userChats, setUserChats] = useState([]);
+  const [userList, setUserList] = useState([]);
 
   const classes = useStyles();
 
-  useEffect(() => {
+  const loadChats = () => {
     let status;
     fetchRetry('/chats', {}).then(
         res => {
@@ -53,7 +55,50 @@ const ChatSidebar = ({onSelectChat, currentUser}) => {
     ).catch(
         err => console.log(err),
     );
+  };
+
+  useEffect(() => {
+    loadChats();
+    let status;
+    fetchRetry('/users', {}).then(
+        res => {
+          status = res.status;
+          return res.json();
+        },
+    ).then(
+        res => {
+          if (status < 400) setUserList(res);
+          else throw Error(res['msg']);
+        },
+    ).catch(
+        err => console.log(err),
+    );
   }, []);
+
+  const createChat = (event) => {
+    let status;
+    console.log(event.target.value);
+    if (event.key === 'Enter') {
+      fetchRetry('/chat', {
+        method: 'POST',
+        body: JSON.stringify({
+          target_username: event.target.value,
+        }),
+      }).then(
+          res => {
+            status = res.status;
+            return res.json();
+          },
+      ).then(
+          res => {
+            if (status < 400) loadChats();
+            else throw Error(res['msg']);
+          },
+      ).catch(
+          err => console.log(err),
+      );
+    }
+  };
 
   return (
       <Grid className={classes.menuRoot} container direction='column'>
@@ -67,9 +112,15 @@ const ChatSidebar = ({onSelectChat, currentUser}) => {
         </Grid>
         <Grid container item alignItems='stretch' justify='flex-start'>
           <Typography className={classes.sideHeader} variant='h5'>Chats</Typography>
-          <FilledInput className={classes.searchInput} placeholder='Search' fullWidth disableUnderline startAdornment={
-            <Search/>
-          }/>
+          <Autocomplete onKeyDown={createChat} clearOnBlur={true} autoComplete={true} autoHighlight={true} freeSolo
+                        clearOnEscape={true}
+                        renderInput={(params) => (
+                            <FilledInput inputRef={params.InputProps.ref} inputProps={{...params.inputProps}}
+                                         className={classes.searchInput} placeholder='Search' fullWidth disableUnderline
+                                         startAdornment={
+                                           <Search/>
+                                         }
+                            />)} options={userList.map(user => user['username'])}/>
           <UserChatList userChats={userChats} onSelectChat={onSelectChat}/>
         </Grid>
       </Grid>

@@ -10,7 +10,7 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
-        <Route exact path={['/', '/signup']} component={SignupInPage}/>
+        <Route exact path={['/', '/signup', 'register']} component={SignupInPage}/>
         <Route exact path='/login' component={SignupInPage}/>
         <Route exact path='/messaging' component={MessagingPage}/>
       </BrowserRouter>
