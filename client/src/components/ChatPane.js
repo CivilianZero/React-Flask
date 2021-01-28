@@ -48,28 +48,25 @@ const ChatPane = ({selectedChat, currentUser, newMessage}) => {
     return `${d.getHours()}:${d.getMinutes()}`;
   };
 
-  const updateMessages = () => {
-    let status;
-    fetchRetry(`/messages/${selectedChat}`, {}).then(
-        res => {
-          status = res.status;
-          return res.json();
-        },
-    ).then(
-        res => {
-          if (status < 400) {
-            setMessages(res);
-            messageRef.current['scrollIntoView']();
-          } else throw Error(res['msg']);
-        },
-    ).catch(
-        err => console.log(err),
-    );
-  };
 
   useEffect(() => {
     if (selectedChat) {
-      updateMessages();
+      let status;
+      fetchRetry(`/messages/${selectedChat}`, {}).then(
+          res => {
+            status = res.status;
+            return res.json();
+          },
+      ).then(
+          res => {
+            if (status < 400) {
+              setMessages(res);
+              messageRef.current['scrollIntoView']();
+            } else throw Error(res['msg']);
+          },
+      ).catch(
+          err => console.log(err),
+      );
     }
   }, [selectedChat]);
 
