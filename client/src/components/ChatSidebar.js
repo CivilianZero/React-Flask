@@ -49,7 +49,7 @@ const ChatSidebar = ({onSelectChat, currentUser}) => {
         },
     ).then(
         res => {
-          if (status < 500) setUserChats(res);
+          if (status < 400) setUserChats(res);
           else throw Error(res['msg']);
         },
     ).catch(
@@ -91,7 +91,8 @@ const ChatSidebar = ({onSelectChat, currentUser}) => {
           },
       ).then(
           res => {
-            if (status < 400) loadChats();
+            console.log(res);
+            if (status < 400) setUserChats([...userChats, res]);
             else throw Error(res['msg']);
           },
       ).catch(

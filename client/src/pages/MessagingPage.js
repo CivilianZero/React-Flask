@@ -33,6 +33,7 @@ const MessagingPage = () => {
   const [{selectedChatId, selectedChatUsername}, setSelectedChat] = useState({});
   const [currentUser, setCurrentUser] = useState({username: '', id: '', email: ''});
   const [newMessage, setNewMessage] = useState({});
+  const [messageInputValue, setMessageInputValue] = useState('');
   const classes = useStyles();
 
   useEffect(() => {
@@ -53,17 +54,16 @@ const MessagingPage = () => {
   }, []);
 
   const sendMessage = (event) => {
-    if (event.key === 'Enter' && selectedChatId) {
-      const newMessageObj = {
-        text: event.target.value,
-        timestamp: new Date().toISOString(),
-        conversation_id: selectedChatId,
-        user_id: currentUser['id'],
-        id: event.timeStamp,
-      };
-      setNewMessage(newMessageObj);
-      event.target.value = null;
-    }
+    event.preventDefault();
+    const newMessageObj = {
+      text: messageInputValue,
+      timestamp: new Date().toISOString(),
+      conversation_id: selectedChatId,
+      user_id: currentUser['id'],
+      id: event.timeStamp,
+    };
+    setNewMessage(newMessageObj);
+    setMessageInputValue('');
   };
 
   return (
@@ -89,7 +89,8 @@ const MessagingPage = () => {
               <ChatPane selectedChat={selectedChatId} currentUser={currentUser} newMessage={newMessage}/>
             </Grid>
             <Grid className={classes.relative} container item xs>
-              <MessageInput sendMessage={sendMessage}/>
+              <MessageInput sendMessage={sendMessage} messageInputValue={messageInputValue}
+                            setMessageInputValue={setMessageInputValue}/>
             </Grid>
           </Grid>
         </Grid>

@@ -19,18 +19,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MessageInput = ({sendMessage}) => {
+const MessageInput = ({sendMessage, messageInputValue, setMessageInputValue}) => {
   const classes = useStyles();
 
+  const handleChange = (event) => {
+    setMessageInputValue(event.target.value);
+  };
+
   return (
-      <FilledInput className={classes.chatInput} fullWidth onKeyDown={sendMessage} disableUnderline
-                   placeholder='Type Something...' endAdornment={
-        <InputAdornment position='end'>
-          <IconButton aria-label='emoji button'>
-            <InsertEmoticonOutlined/>
-          </IconButton>
-        </InputAdornment>
-      }/>
+      <form onSubmit={sendMessage}>
+        <FilledInput value={messageInputValue} className={classes.chatInput} fullWidth onChange={handleChange}
+                     disableUnderline
+                     placeholder='Type Something...' endAdornment={
+          <InputAdornment position='end'>
+            <IconButton aria-label='emoji button'>
+              <InsertEmoticonOutlined/>
+            </IconButton>
+          </InputAdornment>
+        }/>
+      </form>
   );
 };
 

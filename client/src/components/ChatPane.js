@@ -91,8 +91,9 @@ const ChatPane = ({selectedChat, currentUser, newMessage}) => {
           },
       ).then(
           res => {
-            if (status < 500) {
-              updateMessages();
+            if (status < 400) {
+              console.log(res);
+              setMessages([...messages, res]);
             } else throw Error(res['msg']);
           },
       ).catch(

@@ -11,11 +11,8 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
     backgroundColor: theme.palette.getContrastText(theme.palette.primary.main),
     fontWeight: 700,
-    padding: theme.spacing(2),
-    paddingLeft: theme.spacing(4),
-    paddingRight: theme.spacing(4),
-    marginLeft: theme.spacing(4),
-    marginRight: theme.spacing(4),
+    padding: `${theme.spacing(2)}px ${theme.spacing(4)}px`,
+    margin: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
     [theme.breakpoints.down('sm')]: {
       margin: theme.spacing(1),
       padding: theme.spacing(2),
@@ -171,7 +168,6 @@ const SignupInPage = (props) => {
       ).catch(
           err => {
             console.log(err);
-            // TODO: possibly change this error message on backend or find a better way to display, might be kind of long
             setSnackConfig({snackText: err['msg'], alertSeverity: 'error'});
             setOpenSnackbar(true);
           },

@@ -50,8 +50,8 @@ class Conversation(Resource):
         except DatabaseError as error:
             return {"msg": "An error occurred while creating a new chat in the database. Error: {}".format(
                 error)}, 500
-
-        return 201
+        conversation_id = ConversationModel.find_by_target_user(user_id, target_user.id)
+        return {"username": target_user.username, "conversation_id": conversation_id}, 201
 
 
 class ConversationList(Resource):
