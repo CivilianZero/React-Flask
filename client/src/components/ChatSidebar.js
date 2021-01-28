@@ -77,7 +77,6 @@ const ChatSidebar = ({onSelectChat, currentUser}) => {
 
   const createChat = (event) => {
     let status;
-    console.log(event.target.value);
     if (event.key === 'Enter') {
       fetchRetry('/chat', {
         method: 'POST',
@@ -91,7 +90,6 @@ const ChatSidebar = ({onSelectChat, currentUser}) => {
           },
       ).then(
           res => {
-            console.log(res);
             if (status < 400) setUserChats([...userChats, res]);
             else throw Error(res['msg']);
           },
