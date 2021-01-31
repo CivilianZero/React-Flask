@@ -1,6 +1,6 @@
 from flask import jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_refresh_token_required, get_jwt_identity, \
-    set_access_cookies, set_refresh_cookies
+    set_access_cookies, set_refresh_cookies, jwt_required
 from flask_restful import Resource, reqparse
 
 from models.UserModel import UserModel
@@ -34,9 +34,15 @@ class Login(Resource):
         return {"msg": "Invalid credentials"}, 401
 
 
-class TokenRefresh(Resource):
+class Auth(Resource):
+    @classmethod
+    @jwt_required
+    def get(cls):
+        return 200
+
+    @classmethod
     @jwt_refresh_token_required
-    def post(self):
+    def post(cls):
         current_user = get_jwt_identity()
         try:
             new_token = create_access_token(identity=current_user, fresh=False)

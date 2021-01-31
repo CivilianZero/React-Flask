@@ -25,7 +25,7 @@ export const fetchRetry = async (url, {
     const response = await fetch(url, {method, credentials, headers, body});
     if (!response.ok && response.status === 401) {
       error = response;
-      await fetch('/refresh', {
+      await fetch('/auth', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -35,5 +35,5 @@ export const fetchRetry = async (url, {
       });
     } else return response;
   }
-  throw Error(error);
+  return Error(error);
 };
