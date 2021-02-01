@@ -20,11 +20,11 @@ class Conversation(Resource):
         user_id = get_jwt_identity()
 
         try:
-            return ConversationModel.find_by_target_user(user_id, username), 201
+            return ConversationModel.find_by_target_user(user_id, username), 200
         except AttributeError as error:
-            return {"message": "Target user does not exist in the database. Error: {}".format(error)}, 404
+            return {"msg": "Target user does not exist in the database. Error: {}".format(error)}, 404
         except DatabaseError as error:
-            return {"message": "An error occurred while retrieving conversation from the database. Error: {}".format(
+            return {"msg": "An error occurred while retrieving conversation from the database. Error: {}".format(
                 error)}, 500
 
     @classmethod
@@ -41,17 +41,17 @@ class Conversation(Resource):
                 raise ConversationExists(user_id, target_user.id)
             conversation = ConversationModel()
         except ConversationExists as error:
-            return {"message": "Duplicate entry. Error: {}".format(error)}, 409
+            return {"msg": "Duplicate entry. Error: {}".format(error)}, 409
 
         try:
             conversation.upsert(user, target_user)
         except AttributeError as error:
-            return {"message": "Target user does not exist in the database. Error: {}".format(error)}, 404
+            return {"msg": "Target user does not exist in the database. Error: {}".format(error)}, 404
         except DatabaseError as error:
-            return {"message": "An error occurred while creating a new chat in the database. Error: {}".format(
+            return {"msg": "An error occurred while creating a new chat in the database. Error: {}".format(
                 error)}, 500
-
-        return 201
+        conversation_id = ConversationModel.find_by_target_user(user_id, target_user.id)
+        return {"username": target_user.username, "conversation_id": conversation_id}, 201
 
 
 class ConversationList(Resource):
@@ -61,7 +61,7 @@ class ConversationList(Resource):
         user_id = get_jwt_identity()
 
         try:
-            return ConversationModel.get_all_for_current_user(user_id), 201
+            return ConversationModel.get_all_for_current_user(user_id), 200
         except DatabaseError as error:
-            return {"message": "An error occurred while retrieving all conversations in the database. Error: {}".format(
-                error)}
+            return {"msg": "An error occurred while retrieving all conversations in the database. Error: {}".format(
+                error)}, 500

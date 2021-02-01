@@ -1,4 +1,6 @@
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_refresh_token_required, get_jwt_identity
+from flask import jsonify
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_refresh_token_required, get_jwt_identity, \
+    set_access_cookies, set_refresh_cookies, jwt_required
 from flask_restful import Resource, reqparse
 
 from models.UserModel import UserModel
@@ -25,16 +27,28 @@ class Login(Resource):
         if user and user.check_password(data["password"]):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
-            return {
-                       "access_token": access_token,
-                       "refresh_token": refresh_token
-                   }, 200
-        return {"message": "Invalid credentials"}, 401
+            response = jsonify({"username": user.username, "email": user.email, "user_id": user.id})
+            set_access_cookies(response, access_token)
+            set_refresh_cookies(response, refresh_token)
+            return response
+        return {"msg": "Invalid credentials"}, 401
 
 
-class TokenRefresh(Resource):
+class Auth(Resource):
+    @classmethod
+    @jwt_required
+    def get(cls):
+        return 200
+
+    @classmethod
     @jwt_refresh_token_required
-    def post(self):
+    def post(cls):
         current_user = get_jwt_identity()
-        new_token = create_access_token(identity=current_user, fresh=False)
-        return {"access_token": new_token}, 200
+        try:
+            new_token = create_access_token(identity=current_user, fresh=False)
+        except Exception as error:
+            return {"msg": "Error: {}".format(error)}
+        else:
+            response = jsonify({"refresh": True})
+            set_access_cookies(response, new_token)
+            return response

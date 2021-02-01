@@ -41,9 +41,10 @@ class Message(Resource):
         try:
             message.upsert(user, conversation)
         except DatabaseError as error:
-            return {"message": "An error occurred while saving message to database. Error: {}".format(error)}
-
-        return 201
+            return {"msg": "An error occurred while saving message to database. Error: {}".format(error)}, 500
+        message_list = MessageModel.find_all_in_conversation(data["conversation_id"])
+        message = message_list[-1]
+        return message.to_json(), 201
 
 
 class MessageList(Resource):
@@ -56,4 +57,4 @@ class MessageList(Resource):
             message_json = MessageModel.to_json(message)
             message_json_list.append(message_json)
         message_json_list.sort(key=lambda x: x["timestamp"])
-        return message_json_list, 201
+        return message_json_list, 200
