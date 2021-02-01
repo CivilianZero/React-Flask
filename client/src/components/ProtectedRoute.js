@@ -24,8 +24,8 @@ const ProtectedRoute = ({component: Component, ...rest}) => {
         res => {
           if (res.status < 400) {
             setIsAuthenticated(true);
-            setIsLoading(false);
           } else setIsAuthenticated(false);
+          setIsLoading(false);
         },
     );
   }, []);

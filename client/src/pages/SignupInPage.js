@@ -137,7 +137,6 @@ const SignupInPage = (props) => {
           },
       ).catch(
           err => {
-            console.log(err);
             setSnackConfig({snackText: err['msg'], alertSeverity: 'error'});
             setOpenSnackbar(true);
           },
