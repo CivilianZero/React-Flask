@@ -72,16 +72,6 @@ const ChatSidebar = ({onSelectChat, currentUser, onlineUsers}) => {
     );
   }, []);
 
-  useEffect(() => {
-    const chatList = userChats;
-    chatList.forEach(chat => {
-      if (Object.prototype.hasOwnProperty.call(onlineUsers, chat['username'])) {
-        chat['online'] = true;
-      }
-    });
-    setUserChats(chatList);
-  }, [onlineUsers]);
-
   const createChat = (event) => {
     let status;
     if (event.key === 'Enter') {
@@ -127,7 +117,7 @@ const ChatSidebar = ({onSelectChat, currentUser, onlineUsers}) => {
                                            <Search/>
                                          }
                             />)} options={userList.map(user => user['username'])}/>
-          <UserChatList userChats={userChats} onSelectChat={onSelectChat}/>
+          <UserChatList userChats={userChats} onSelectChat={onSelectChat} onlineUsers={onlineUsers}/>
         </Grid>
       </Grid>
   );

@@ -2,6 +2,7 @@ from flask import jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_refresh_token_required, get_jwt_identity, \
     set_access_cookies, set_refresh_cookies, jwt_required
 from flask_restful import Resource, reqparse
+from flask_socketio import emit
 
 from models.UserModel import UserModel
 
@@ -38,6 +39,12 @@ class Auth(Resource):
     @staticmethod
     @jwt_required
     def get():
+        user_id = get_jwt_identity()
+        user = UserModel.find_by_id(user_id)
+        online_users = UserModel.get_current_users()
+        if user.username not in online_users:
+            UserModel.add_current_user(user.username)
+        emit('get_users', online_users, broadcast=True, namespace="user")
         return 200
 
     @staticmethod
