@@ -1,4 +1,4 @@
-import { Grid, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Badge, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
@@ -21,6 +21,12 @@ const useStyles = makeStyles((theme) => ({
     '& svg': {
       color: '#95A7C4',
     },
+    '& h5': {
+      display: 'inline',
+    },
+  },
+  badge: {
+    margin: theme.spacing(2),
   },
   relative: {
     position: 'relative',
@@ -35,7 +41,10 @@ const MessagingPage = () => {
   const [currentUser, setCurrentUser] = useState({username: '', id: '', email: ''});
   const [newMessage, setNewMessage] = useState({});
   const [messageSocket, setMessageSocket] = useState(null);
+  const [userSocket, setUserSocket] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState({});
   const [messageInputValue, setMessageInputValue] = useState('');
+  const [selectedOnline, setSelectedOnline] = useState(false);
   const classes = useStyles();
 
   useEffect(() => {
@@ -55,19 +64,26 @@ const MessagingPage = () => {
     );
 
     setMessageSocket(io('/message'));
+    setUserSocket(io('/user'));
   }, []);
 
 
   useEffect(() => {
-    if (!messageSocket) return;
-
+    if (!messageSocket || !userSocket) return;
+    userSocket.emit('get_online_users');
+    userSocket.on('get_users', (data) => {
+      setOnlineUsers(data);
+    });
     messageSocket.on('receive_message', (data) => {
       setNewMessage(data);
     });
-    return () => {
-      messageSocket.off('receive_message');
-    };
-  }, [messageSocket]);
+  }, [messageSocket, userSocket]);
+
+  useEffect(() => {
+    if (Object.prototype.hasOwnProperty.call(onlineUsers, selectedChatUsername)) {
+      setSelectedOnline(true);
+    } else setSelectedOnline(false);
+  }, [selectedChatUsername, onlineUsers]);
 
   const sendMessage = (event) => {
     event.preventDefault();
@@ -83,7 +99,7 @@ const MessagingPage = () => {
   return (
       <Grid container className={classes.root} spacing={3}>
         <Grid item sm={3}>
-          <ChatSidebar onSelectChat={setSelectedChat} currentUser={currentUser}/>
+          <ChatSidebar onSelectChat={setSelectedChat} currentUser={currentUser} onlineUsers={onlineUsers}/>
         </Grid>
         <Grid container item sm direction='column' alignItems='stretch'>
           <Grid className={classes.noMaxWidth} item xs={1}>
@@ -91,6 +107,10 @@ const MessagingPage = () => {
               <Grid container alignItems='center'>
                 <Grid item xs>
                   <Typography variant='h5'>{selectedChatUsername}</Typography>
+                  {selectedChatUsername ?
+                      <span><Badge className={classes.badge} color={selectedOnline ? 'secondary' : 'error'}
+                                   variant='dot'/>
+                        <small>{selectedOnline ? 'Online' : 'Offline'}</small></span> : <span/>}
                 </Grid>
                 <Grid container item xs={1} alignItems='center'>
                   <MoreHoriz/>

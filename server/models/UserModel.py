@@ -79,5 +79,13 @@ class UserModel(db.Model):
         return {"username": self.username, "email": self.email}
 
     @staticmethod
-    def add_current_user(username, sid):
-        current_users[username] = sid
+    def add_current_user(username):
+        current_users[username] = True
+
+    @staticmethod
+    def remove_current_user(username):
+        current_users.pop(username)
+
+    @staticmethod
+    def get_current_users():
+        return current_users

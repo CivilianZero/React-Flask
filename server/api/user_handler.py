@@ -1,7 +1,6 @@
-from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource
-from flask_socketio import Namespace
+from flask_socketio import Namespace, emit
 
 from models.UserModel import UserModel
 
@@ -28,4 +27,11 @@ class UserList(Resource):
 class UserSocket(Namespace):
     @staticmethod
     def on_login(username):
-        UserModel.add_current_user(username, request.sid)
+        UserModel.add_current_user(username)
+        online_users = UserModel.get_current_users()
+        emit('get_users', online_users, broadcast=True)
+
+    @staticmethod
+    def on_get_online_users():
+        online_users = UserModel.get_current_users()
+        emit('get_users', online_users)

@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ChatSidebar = ({onSelectChat, currentUser}) => {
+const ChatSidebar = ({onSelectChat, currentUser, onlineUsers}) => {
   const [userChats, setUserChats] = useState([]);
   const [userList, setUserList] = useState([]);
 
@@ -50,6 +50,7 @@ const ChatSidebar = ({onSelectChat, currentUser}) => {
     ).then(
         res => {
           if (status < 400) {
+            res.forEach(chat => chat['online'] = false);
             setUserChats(res);
           } else throw Error(res['msg']);
         },
@@ -70,6 +71,16 @@ const ChatSidebar = ({onSelectChat, currentUser}) => {
         err => console.log(err),
     );
   }, []);
+
+  useEffect(() => {
+    const chatList = userChats;
+    chatList.forEach(chat => {
+      if (Object.prototype.hasOwnProperty.call(onlineUsers, chat['username'])) {
+        chat['online'] = true;
+      }
+    });
+    setUserChats(chatList);
+  }, [onlineUsers]);
 
   const createChat = (event) => {
     let status;

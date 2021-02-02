@@ -164,6 +164,7 @@ const SignupInPage = (props) => {
           res => {
             if (status < 400) {
               setSnackConfig({snackText: 'Successfully Registered!', alertSeverity: 'success'});
+              userSocket.emit('login');
               history.push('/login');
             } else throw Error(res['msg']);
           },
@@ -199,9 +200,6 @@ const SignupInPage = (props) => {
       setHaveAccount(false);
       setTextState(signupText);
     }
-    // userSocket.on('get_users', (users) => {
-    //   console.log(users);
-    // })
   }, [props.location.pathname]);
 
 

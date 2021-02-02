@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemIcon, ListItemText, makeStyles } from '@material-ui/core';
+import { Badge, List, ListItem, ListItemIcon, ListItemText, makeStyles } from '@material-ui/core';
 import { Person } from '@material-ui/icons';
 import React from 'react';
 
@@ -22,6 +22,8 @@ const UserChatList = ({userChats, onSelectChat}) => {
                 })}>
         <ListItemIcon>
           <Person/>
+          <Badge color={chat['online'] ? 'secondary' : 'error'} variant='dot'
+                 anchorOrigin={{vertical: 'bottom', horizontal: 'right'}} overlap='circle'/>
         </ListItemIcon>
         <ListItemText
             primary={chat['username']}
