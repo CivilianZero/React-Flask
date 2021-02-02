@@ -11,6 +11,8 @@ user_conversations = db.Table("user_conversations",
                                         primary_key=True),
                               db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True))
 
+current_users = {}
+
 
 class UserModel(db.Model):
     __tablename__ = "user"
@@ -75,3 +77,7 @@ class UserModel(db.Model):
 
     def to_json(self):
         return {"username": self.username, "email": self.email}
+
+    @staticmethod
+    def add_current_user(username, sid):
+        current_users[username] = sid

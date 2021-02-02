@@ -2,6 +2,7 @@ import { Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import ChatPane from '../components/ChatPane';
 import ChatSidebar from '../components/ChatSidebar';
 import MessageInput from '../components/MessageInput';
@@ -33,6 +34,7 @@ const MessagingPage = () => {
   const [{selectedChatId, selectedChatUsername}, setSelectedChat] = useState({});
   const [currentUser, setCurrentUser] = useState({username: '', id: '', email: ''});
   const [newMessage, setNewMessage] = useState({});
+  const [messageSocket, setMessageSocket] = useState(null);
   const [messageInputValue, setMessageInputValue] = useState('');
   const classes = useStyles();
 
@@ -51,7 +53,21 @@ const MessagingPage = () => {
     ).catch(
         err => console.log(err),
     );
+
+    setMessageSocket(io('/message'));
   }, []);
+
+
+  useEffect(() => {
+    if (!messageSocket) return;
+
+    messageSocket.on('receive_message', (data) => {
+      setNewMessage(data);
+    });
+    return () => {
+      messageSocket.off('receive_message');
+    };
+  }, [messageSocket]);
 
   const sendMessage = (event) => {
     event.preventDefault();
@@ -59,10 +75,8 @@ const MessagingPage = () => {
       text: messageInputValue,
       timestamp: new Date().toISOString(),
       conversation_id: selectedChatId,
-      user_id: currentUser['id'],
-      id: event.timeStamp,
     };
-    setNewMessage(newMessageObj);
+    messageSocket.emit('send_chat', newMessageObj);
     setMessageInputValue('');
   };
 

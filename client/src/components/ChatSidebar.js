@@ -40,7 +40,7 @@ const ChatSidebar = ({onSelectChat, currentUser}) => {
 
   const classes = useStyles();
 
-  const loadChats = () => {
+  useEffect(() => {
     let status;
     fetchRetry('/chats', {}).then(
         res => {
@@ -49,17 +49,13 @@ const ChatSidebar = ({onSelectChat, currentUser}) => {
         },
     ).then(
         res => {
-          if (status < 400) setUserChats(res);
-          else throw Error(res['msg']);
+          if (status < 400) {
+            setUserChats(res);
+          } else throw Error(res['msg']);
         },
     ).catch(
         err => console.log(err),
     );
-  };
-
-  useEffect(() => {
-    loadChats();
-    let status;
     fetchRetry('/users', {}).then(
         res => {
           status = res.status;

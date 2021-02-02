@@ -35,20 +35,21 @@ class Login(Resource):
 
 
 class Auth(Resource):
-    @classmethod
+    @staticmethod
     @jwt_required
-    def get(cls):
+    def get():
         return 200
 
-    @classmethod
+    @staticmethod
     @jwt_refresh_token_required
-    def post(cls):
-        current_user = get_jwt_identity()
+    def post():
+        user_id = get_jwt_identity()
         try:
-            new_token = create_access_token(identity=current_user, fresh=False)
+            new_token = create_access_token(identity=user_id, fresh=False)
         except Exception as error:
             return {"msg": "Error: {}".format(error)}
         else:
             response = jsonify({"refresh": True})
             set_access_cookies(response, new_token)
+
             return response
