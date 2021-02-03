@@ -1,4 +1,5 @@
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import request
+from flask_jwt_extended import jwt_required, get_jwt_identity, decode_token
 from flask_restful import Resource
 from flask_socketio import Namespace, emit, join_room
 from sqlalchemy.exc import DatabaseError
@@ -25,6 +26,8 @@ class MessageSocket(Namespace):
     @staticmethod
     @jwt_required
     def on_connect():
+        if not decode_token(request.cookies['access_token_cookie']):
+            raise ConnectionRefusedError('incorrect token')
         user_id = get_jwt_identity()
         conversation_list = ConversationModel.get_conversation_ids_for_user(user_id)
         [join_room(conversation_id) for conversation_id in conversation_list]

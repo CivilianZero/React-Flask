@@ -44,7 +44,7 @@ class Auth(Resource):
         online_users = UserModel.get_current_users()
         if user.username not in online_users:
             UserModel.add_current_user(user.username)
-        emit('get_users', online_users, broadcast=True, namespace="user")
+        emit('get_online_users', broadcast=True, namespace="user")
         return 200
 
     @staticmethod
