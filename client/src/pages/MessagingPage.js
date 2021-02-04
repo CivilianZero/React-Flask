@@ -56,15 +56,15 @@ const MessagingPage = () => {
         },
     ).then(
         res => {
-          if (status < 400) setCurrentUser(res);
-          else throw Error(res['msg']);
+          if (status < 400) {
+            setMessageSocket(io('/message'));
+            setUserSocket(io('/user'));
+            setCurrentUser(res);
+          } else throw Error(res['msg']);
         },
     ).catch(
         err => console.log(err),
     );
-
-    setMessageSocket(io('/message'));
-    setUserSocket(io('/user'));
   }, []);
 
 

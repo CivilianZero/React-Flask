@@ -2,7 +2,7 @@ import { Badge, List, ListItem, ListItemIcon, ListItemText, makeStyles } from '@
 import { Person } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 
-const useStyle = makeStyles((theme) => ({
+const useStyle = makeStyles(() => ({
   userList: {
     width: '100%',
   },

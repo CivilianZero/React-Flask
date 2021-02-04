@@ -71,7 +71,7 @@ const ChatPane = ({selectedChat, currentUser, newMessage}) => {
   }, [selectedChat]);
 
   useEffect(() => {
-    if (newMessage.text && messageRef.current) {
+    if (newMessage['text'] && messageRef.current && newMessage['conversation_id'] === selectedChat) {
       setMessages([...messages, newMessage]);
       setTimeout(() => messageRef.current['scrollIntoView']());
     }

@@ -11,11 +11,9 @@ function App() {
   return (
       <MuiThemeProvider theme={theme}>
         <BrowserRouter>
-          {/*<SocketContext value={socket}>*/}
           <Route exact path={['/', '/signup', 'register']} component={SignupInPage}/>
           <Route exact path='/login' component={SignupInPage}/>
           <ProtectedRoute exact={true} path='/messaging' component={MessagingPage}/>
-          {/*</SocketContext>*/}
         </BrowserRouter>
       </MuiThemeProvider>
   );
