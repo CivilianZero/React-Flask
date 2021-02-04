@@ -1,7 +1,7 @@
 import { Badge, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { useHistory, withRouter } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import ChatPane from '../components/ChatPane';
 import ChatSidebar from '../components/ChatSidebar';
@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
   },
   badge: {
     margin: theme.spacing(2),
+    '& .MuiBadge-colorError': {
+      backgroundColor: '#D0DAE9',
+    },
   },
   relative: {
     position: 'relative',
@@ -46,8 +49,12 @@ const MessagingPage = () => {
   const [messageInputValue, setMessageInputValue] = useState('');
   const [selectedOnline, setSelectedOnline] = useState(false);
   const classes = useStyles();
+  const history = useHistory();
+
 
   useEffect(() => {
+    let uSocket;
+    let mSocket;
     let status;
     fetchRetry('/user', {}).then(
         res => {
@@ -57,21 +64,31 @@ const MessagingPage = () => {
     ).then(
         res => {
           if (status < 400) {
-            setMessageSocket(io('/message'));
-            setUserSocket(io('/user'));
+            mSocket = io('/message');
+            setMessageSocket(mSocket);
+            uSocket = io('/user');
+            setUserSocket(uSocket);
             setCurrentUser(res);
           } else throw Error(res['msg']);
         },
     ).catch(
-        err => console.log(err),
+        err => {
+          history.push('/login');
+          console.log(err);
+        },
     );
+    return () => {
+      if (uSocket && mSocket) {
+        uSocket.disconnect();
+        mSocket.disconnect();
+      }
+    };
   }, []);
 
 
   useEffect(() => {
     if (!messageSocket || !userSocket) return;
 
-    userSocket.emit('login', currentUser['username']);
     userSocket.on('get_users', (data) => {
       setOnlineUsers(data);
     });

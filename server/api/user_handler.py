@@ -27,15 +27,22 @@ class UserList(Resource):
 
 class UserSocket(Namespace):
     @staticmethod
+    @jwt_required
     def on_connect():
         if not decode_token(request.cookies['access_token_cookie']):
             raise ConnectionRefusedError('incorrect token')
-
-    @staticmethod
-    def on_login(username):
-        UserModel.add_current_user(username)
+        user_id = get_jwt_identity()
+        user = UserModel.find_by_id(user_id)
+        UserModel.add_current_user(user.username)
         online_users = UserModel.get_current_users()
         emit('get_users', online_users, broadcast=True)
+
+    @staticmethod
+    @jwt_required
+    def on_disconnect():
+        user_id = get_jwt_identity()
+        user = UserModel.find_by_id(user_id)
+        UserModel.remove_current_user(user.username)
 
     @staticmethod
     def on_get_online_users():
