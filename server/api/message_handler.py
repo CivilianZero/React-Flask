@@ -48,8 +48,6 @@ class MessageSocket(Namespace):
             message.upsert(user, conversation)
         except DatabaseError as error:
             return {"msg": "An error occurred while saving message to database. Error: {}".format(error)}, 500
-        message_list = MessageModel.find_all_in_conversation(message.conversation_id)
-        message = message_list[-1]
         emit('receive_message', message.to_json(), room=message.conversation_id)
 
     @staticmethod
