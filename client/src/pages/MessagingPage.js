@@ -73,7 +73,7 @@ const MessagingPage = () => {
         },
     ).catch(
         err => {
-          history.push('/login');
+          if (status === 401) history.push('/login');
           console.log(err);
         },
     );
