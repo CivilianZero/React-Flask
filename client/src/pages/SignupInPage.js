@@ -1,10 +1,9 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Grid, Hidden, makeStyles, Snackbar, TextField, Typography } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, withRouter } from 'react-router-dom';
-import { io } from 'socket.io-client';
 import * as yup from 'yup';
 
 const useStyles = makeStyles((theme) => ({
@@ -81,7 +80,6 @@ const SignupInPage = (props) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [{header, headButton, headSpan, submitButton}, setTextState] = useState(signupText);
   const [{snackText, alertSeverity}, setSnackConfig] = useState({snackText: '', alertSeverity: 'error'});
-  const [userSocket, setUserSocket] = useState();
 
   const classes = useStyles();
   const history = useHistory();
@@ -134,7 +132,6 @@ const SignupInPage = (props) => {
       ).then(
           res => {
             if (status < 400) {
-              userSocket.emit('login', res['username']);
               history.push('/messaging');
             } else throw Error(res['msg']);
           },
@@ -164,7 +161,6 @@ const SignupInPage = (props) => {
           res => {
             if (status < 400) {
               setSnackConfig({snackText: 'Successfully Registered!', alertSeverity: 'success'});
-              userSocket.emit('login');
               history.push('/login');
             } else throw Error(res['msg']);
           },
@@ -185,10 +181,6 @@ const SignupInPage = (props) => {
     }
   };
   const closeSnackbar = () => setOpenSnackbar(false);
-
-  useEffect(() => {
-    setUserSocket(io('/user'));
-  }, []);
 
   // Set state based on url path
   useLayoutEffect(() => {

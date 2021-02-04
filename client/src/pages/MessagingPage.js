@@ -70,7 +70,8 @@ const MessagingPage = () => {
 
   useEffect(() => {
     if (!messageSocket || !userSocket) return;
-    userSocket.emit('get_online_users');
+
+    userSocket.emit('login', currentUser['username']);
     userSocket.on('get_users', (data) => {
       setOnlineUsers(data);
     });
