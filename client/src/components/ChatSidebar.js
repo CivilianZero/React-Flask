@@ -34,13 +34,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ChatSidebar = ({onSelectChat, currentUser}) => {
+const ChatSidebar = ({onSelectChat, currentUser, onlineUsers}) => {
   const [userChats, setUserChats] = useState([]);
   const [userList, setUserList] = useState([]);
 
   const classes = useStyles();
 
-  const loadChats = () => {
+  useEffect(() => {
     let status;
     fetchRetry('/chats', {}).then(
         res => {
@@ -49,17 +49,13 @@ const ChatSidebar = ({onSelectChat, currentUser}) => {
         },
     ).then(
         res => {
-          if (status < 400) setUserChats(res);
-          else throw Error(res['msg']);
+          if (status < 400) {
+            setUserChats(res);
+          } else throw Error(res['msg']);
         },
     ).catch(
         err => console.log(err),
     );
-  };
-
-  useEffect(() => {
-    loadChats();
-    let status;
     fetchRetry('/users', {}).then(
         res => {
           status = res.status;
@@ -120,7 +116,7 @@ const ChatSidebar = ({onSelectChat, currentUser}) => {
                                            <Search/>
                                          }
                             />)} options={userList.map(user => user['username'])}/>
-          <UserChatList userChats={userChats} onSelectChat={onSelectChat}/>
+          <UserChatList userChats={userChats} onSelectChat={onSelectChat} onlineUsers={onlineUsers}/>
         </Grid>
       </Grid>
   );

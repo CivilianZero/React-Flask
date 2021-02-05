@@ -1,5 +1,6 @@
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource, reqparse
+from flask_socketio import join_room
 from sqlalchemy.exc import DatabaseError
 
 from models.ConversationModel import ConversationModel, ConversationExists
@@ -14,9 +15,9 @@ class Conversation(Resource):
                         trim=True,
                         help="Username of target is required")
 
-    @classmethod
+    @staticmethod
     @jwt_required
-    def get(cls, username):
+    def get(username):
         user_id = get_jwt_identity()
 
         try:
@@ -51,13 +52,14 @@ class Conversation(Resource):
             return {"msg": "An error occurred while creating a new chat in the database. Error: {}".format(
                 error)}, 500
         conversation_id = ConversationModel.find_by_target_user(user_id, target_user.id)
+        join_room(conversation_id)
         return {"username": target_user.username, "conversation_id": conversation_id}, 201
 
 
 class ConversationList(Resource):
-    @classmethod
+    @staticmethod
     @jwt_required
-    def get(cls):
+    def get():
         user_id = get_jwt_identity()
 
         try:

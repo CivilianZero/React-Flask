@@ -159,7 +159,7 @@ const SignupInPage = (props) => {
           },
       ).then(
           res => {
-            if (status < 500) {
+            if (status < 400) {
               setSnackConfig({snackText: 'Successfully Registered!', alertSeverity: 'success'});
               history.push('/login');
             } else throw Error(res['msg']);

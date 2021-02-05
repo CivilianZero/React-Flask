@@ -71,33 +71,9 @@ const ChatPane = ({selectedChat, currentUser, newMessage}) => {
   }, [selectedChat]);
 
   useEffect(() => {
-    if (newMessage.text && newMessage.text.length > 0) {
+    if (newMessage['text'] && messageRef.current && newMessage['conversation_id'] === selectedChat) {
       setMessages([...messages, newMessage]);
       setTimeout(() => messageRef.current['scrollIntoView']());
-      let status;
-      fetchRetry('/message', {
-        method: 'POST', body: JSON.stringify({
-          text: newMessage.text,
-          timestamp: newMessage.timestamp,
-          conversation_id: newMessage.conversation_id,
-        }),
-      }).then(
-          res => {
-            status = res.status;
-            return res.json();
-          },
-      ).then(
-          res => {
-            if (status < 400) {
-              setMessages([...messages, res]);
-            } else throw Error(res['msg']);
-          },
-      ).catch(
-          err => {
-            // TODO: add snackbar maybe to show if message didn't send?
-            console.log(err);
-          },
-      );
     }
   }, [newMessage]);
 

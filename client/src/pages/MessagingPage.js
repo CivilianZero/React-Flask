@@ -1,7 +1,8 @@
-import { Grid, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Badge, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { useHistory, withRouter } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import ChatPane from '../components/ChatPane';
 import ChatSidebar from '../components/ChatSidebar';
 import MessageInput from '../components/MessageInput';
@@ -20,6 +21,15 @@ const useStyles = makeStyles((theme) => ({
     '& svg': {
       color: '#95A7C4',
     },
+    '& h5': {
+      display: 'inline',
+    },
+  },
+  badge: {
+    margin: theme.spacing(2),
+    '& .MuiBadge-colorError': {
+      backgroundColor: '#D0DAE9',
+    },
   },
   relative: {
     position: 'relative',
@@ -33,10 +43,17 @@ const MessagingPage = () => {
   const [{selectedChatId, selectedChatUsername}, setSelectedChat] = useState({});
   const [currentUser, setCurrentUser] = useState({username: '', id: '', email: ''});
   const [newMessage, setNewMessage] = useState({});
+  const [messageSocket, setMessageSocket] = useState(null);
+  const [userSocket, setUserSocket] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState({});
   const [messageInputValue, setMessageInputValue] = useState('');
   const classes = useStyles();
+  const history = useHistory();
+
 
   useEffect(() => {
+    let uSocket;
+    let mSocket;
     let status;
     fetchRetry('/user', {}).then(
         res => {
@@ -45,13 +62,39 @@ const MessagingPage = () => {
         },
     ).then(
         res => {
-          if (status < 400) setCurrentUser(res);
-          else throw Error(res['msg']);
+          if (status < 400) {
+            mSocket = io('/message');
+            setMessageSocket(mSocket);
+            uSocket = io('/user');
+            setUserSocket(uSocket);
+            setCurrentUser(res);
+          } else throw Error(res['msg']);
         },
     ).catch(
-        err => console.log(err),
+        err => {
+          if (status === 401) history.push('/login');
+          console.log(err);
+        },
     );
+    return () => {
+      if (uSocket && mSocket) {
+        uSocket.disconnect();
+        mSocket.disconnect();
+      }
+    };
   }, []);
+
+
+  useEffect(() => {
+    if (!messageSocket || !userSocket) return;
+
+    userSocket.on('get_users', (data) => {
+      setOnlineUsers(data);
+    });
+    messageSocket.on('receive_message', (data) => {
+      setNewMessage(data);
+    });
+  }, [messageSocket, userSocket]);
 
   const sendMessage = (event) => {
     event.preventDefault();
@@ -59,17 +102,15 @@ const MessagingPage = () => {
       text: messageInputValue,
       timestamp: new Date().toISOString(),
       conversation_id: selectedChatId,
-      user_id: currentUser['id'],
-      id: event.timeStamp,
     };
-    setNewMessage(newMessageObj);
+    messageSocket.emit('send_chat', newMessageObj);
     setMessageInputValue('');
   };
 
   return (
       <Grid container className={classes.root} spacing={3}>
         <Grid item sm={3}>
-          <ChatSidebar onSelectChat={setSelectedChat} currentUser={currentUser}/>
+          <ChatSidebar onSelectChat={setSelectedChat} currentUser={currentUser} onlineUsers={onlineUsers}/>
         </Grid>
         <Grid container item sm direction='column' alignItems='stretch'>
           <Grid className={classes.noMaxWidth} item xs={1}>
@@ -77,6 +118,12 @@ const MessagingPage = () => {
               <Grid container alignItems='center'>
                 <Grid item xs>
                   <Typography variant='h5'>{selectedChatUsername}</Typography>
+                  {selectedChatUsername ?
+                      <span><Badge className={classes.badge}
+                                   color={Object.prototype.hasOwnProperty.call(onlineUsers, selectedChatUsername) ? 'secondary' : 'error'}
+                                   variant='dot'/>
+                        <small>{Object.prototype.hasOwnProperty.call(onlineUsers, selectedChatUsername) ? 'Online' : 'Offline'}</small></span> :
+                      <span/>}
                 </Grid>
                 <Grid container item xs={1} alignItems='center'>
                   <MoreHoriz/>
