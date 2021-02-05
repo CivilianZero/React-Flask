@@ -50,7 +50,6 @@ const ChatSidebar = ({onSelectChat, currentUser, onlineUsers}) => {
     ).then(
         res => {
           if (status < 400) {
-            res.forEach(chat => chat['online'] = false);
             setUserChats(res);
           } else throw Error(res['msg']);
         },

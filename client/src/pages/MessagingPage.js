@@ -47,7 +47,6 @@ const MessagingPage = () => {
   const [userSocket, setUserSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState({});
   const [messageInputValue, setMessageInputValue] = useState('');
-  const [selectedOnline, setSelectedOnline] = useState(false);
   const classes = useStyles();
   const history = useHistory();
 
@@ -97,12 +96,6 @@ const MessagingPage = () => {
     });
   }, [messageSocket, userSocket]);
 
-  useEffect(() => {
-    if (Object.prototype.hasOwnProperty.call(onlineUsers, selectedChatUsername)) {
-      setSelectedOnline(true);
-    } else setSelectedOnline(false);
-  }, [selectedChatUsername, onlineUsers]);
-
   const sendMessage = (event) => {
     event.preventDefault();
     const newMessageObj = {
@@ -126,9 +119,11 @@ const MessagingPage = () => {
                 <Grid item xs>
                   <Typography variant='h5'>{selectedChatUsername}</Typography>
                   {selectedChatUsername ?
-                      <span><Badge className={classes.badge} color={selectedOnline ? 'secondary' : 'error'}
+                      <span><Badge className={classes.badge}
+                                   color={Object.prototype.hasOwnProperty.call(onlineUsers, selectedChatUsername) ? 'secondary' : 'error'}
                                    variant='dot'/>
-                        <small>{selectedOnline ? 'Online' : 'Offline'}</small></span> : <span/>}
+                        <small>{Object.prototype.hasOwnProperty.call(onlineUsers, selectedChatUsername) ? 'Online' : 'Offline'}</small></span> :
+                      <span/>}
                 </Grid>
                 <Grid container item xs={1} alignItems='center'>
                   <MoreHoriz/>

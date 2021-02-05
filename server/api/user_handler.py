@@ -43,6 +43,8 @@ class UserSocket(Namespace):
         user_id = get_jwt_identity()
         user = UserModel.find_by_id(user_id)
         UserModel.remove_current_user(user.username)
+        online_users = UserModel.get_current_users()
+        emit('get_users', online_users, broadcast=True)
 
     @staticmethod
     def on_get_online_users():
